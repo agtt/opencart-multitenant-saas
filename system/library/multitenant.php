@@ -2,22 +2,27 @@
 require_once(DIR_SYSTEM . 'startup.php');
 
 start('catalog');
+
 class MultiTenant
 {
 
     public function __construct($domain)
     {
         $this->db = new \mysqli('localhost', 'root', '');
+        $this->domain = $domain;
+
     }
 
     public function createTenant()
     {
         // Create database and user
-        $this->createDatabase();
+        $database = $this->createDatabase();
         // Install demodata
         /* */
         //Create demo folder
-        $this->xcopy('C:\xampp\htdocs\oc\repo\localhost','C:\xampp\htdocs\oc\repo\localhost2');
+        $this->createFolder();
+
+        return $database;
 
     }
 
@@ -40,9 +45,9 @@ class MultiTenant
         return ['pwd' => $pass, 'dbname' => $dbname];
     }
 
-    public function createFolder($domain)
+    public function createFolder()
     {
-        $this->xcopy('C:/xampp/htdocs/oc/repo/localhost', 'C:/xampp/htdocs/oc/repo/' . $domain);
+        $this->xcopy(DIR_OPENCART . 'repo/localhost', DIR_OPENCART . 'repo/' . $this->getName($this->domain));
     }
 
     public function randomPassword()
@@ -100,6 +105,16 @@ class MultiTenant
         // Clean up
         $dir->close();
         return true;
+    }
+
+    public function getName($url)
+    {
+        $pieces = parse_url($url);
+        $domain = isset($pieces['host']) ? $pieces['host'] : $pieces['path'];
+        if (preg_match('/(?P<domain>[a-z0-9][a-z0-9\-]{1,63}\.[a-z\.]{2,6})$/i', $domain, $regs)) {
+            return str_replace('.', '', $regs['domain']);
+        }
+        return false;
     }
 
 }
