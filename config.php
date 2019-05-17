@@ -10,7 +10,7 @@ define('HTTPS_SERVER', 'http://' . $env->getDomain() . "/" . $env->scriptpath);
 // DIR
 define('DIR_APPLICATION', 'C:/xampp/htdocs/oc/catalog/');
 define('DIR_SYSTEM', 'C:/xampp/htdocs/oc/system/');
-define('DIR_IMAGE',$env->getTenantDirectory().'image/'); // Custom
+define('DIR_IMAGE', $env->getTenantDirectory() . 'image/'); // Custom
 define('DIR_STORAGE', $env->getTenantDirectory() . 'storage/');
 define('DIR_LANGUAGE', DIR_APPLICATION . 'language/');
 define('DIR_TEMPLATE', DIR_APPLICATION . 'view/theme/');

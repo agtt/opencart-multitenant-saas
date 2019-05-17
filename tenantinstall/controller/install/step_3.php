@@ -177,7 +177,7 @@ class ControllerInstallStep3 extends Controller {
 		if (isset($this->request->post['db_driver'])) {
 			$data['db_driver'] = $this->request->post['db_driver'];
 		} else {
-			$data['db_driver'] = '';
+			$data['db_driver'] = 'mpdo';
 		}
 
 		if (isset($this->request->post['db_hostname'])) {
@@ -213,7 +213,7 @@ class ControllerInstallStep3 extends Controller {
 		if (isset($this->request->post['db_prefix'])) {
 			$data['db_prefix'] = $this->request->post['db_prefix'];
 		} else {
-			$data['db_prefix'] = 'oc_';
+			$data['db_prefix'] = 'kr_';
 		}
 
 		if (isset($this->request->post['username'])) {
