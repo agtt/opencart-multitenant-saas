@@ -5,11 +5,16 @@ start('catalog');
 
 class MultiTenant
 {
+    public $path;
+    public $name;
+    public $domain;
 
     public function __construct($domain)
     {
         $this->db = new \mysqli('localhost', 'root', '');
         $this->domain = $domain;
+        $this->name = $this->getName($this->domain);
+        $this->path = DIR_OPENCART . 'repo/' . $this->name;
 
     }
 
