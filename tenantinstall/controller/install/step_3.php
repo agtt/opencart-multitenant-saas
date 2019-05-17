@@ -7,9 +7,10 @@ class ControllerInstallStep3 extends Controller
     public function index()
     {
         $this->load->language('install/step_3');
-
         if (($this->request->server['REQUEST_METHOD'] == 'POST') && $this->validate()) {
             $this->load->model('install/install');
+            $tenant = new MultiTenant(addslashes($this->request->post['domain']));
+            $tenant->createDatabase();
 
             $this->model_install_install->database($this->request->post);
 
@@ -139,6 +140,12 @@ class ControllerInstallStep3 extends Controller
             $data['error_db_username'] = '';
         }
 
+        if (isset($this->error['domain'])) {
+            $data['error_domain'] = $this->error['domain'];
+        } else {
+            $data['error_domain'] = '';
+        }
+
         if (isset($this->error['db_database'])) {
             $data['error_db_database'] = $this->error['db_database'];
         } else {
@@ -263,10 +270,21 @@ class ControllerInstallStep3 extends Controller
         $this->response->setOutput($this->load->view('install/step_3', $data));
     }
 
+    function is_valid_domain_name($domain_name)
+    {
+        return (preg_match("/^([a-z\d](-*[a-z\d])*)(\.([a-z\d](-*[a-z\d])*))*$/i", $domain_name) //valid chars check
+            && preg_match("/^.{1,253}$/", $domain_name) //overall length check
+            && preg_match("/^[^\.]{1,63}(\.[^\.]{1,63})*$/", $domain_name)); //length of each label
+    }
+
     private function validate()
     {
         if (!$this->request->post['db_hostname']) {
             $this->error['db_hostname'] = $this->language->get('error_db_hostname');
+        }
+
+        if (!$this->request->post['domain'] and $this->is_valid_domain_name($this->request->post['domain'])) {
+            $this->error['domain'] = 'Domain adı hatası';
         }
 
         if (!$this->request->post['db_username']) {
