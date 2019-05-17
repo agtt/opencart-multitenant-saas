@@ -3,7 +3,7 @@
 class environment
 {
 
-    private $tenantdirectory = "repository/";
+    private $tenantdirectory = "repo/";
     public $scriptpath = "oc/";
 
     public function __construct($admin=false)

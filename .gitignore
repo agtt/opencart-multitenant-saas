@@ -4,6 +4,6 @@ image/cache/*
 image/catalog/*
 system/storage/*
 catalog/view/theme/journal3/assets/*
-repository/*
-repository
+repo/*
+repo
 *.log

@@ -4,6 +4,7 @@ Class ControllerInstallInstall extends Controller
 {
     public function index()
     {
+        $this->createFolder('sifrex.com');
     }
 
     public function createTenant()
@@ -35,6 +36,9 @@ Class ControllerInstallInstall extends Controller
         return ['pwd' => $pass, 'dbname' => $dbname];
     }
 
+    public function createFolder($domain){
+        $this->xcopy('C:/xampp/htdocs/oc/repo/localhost','C:/xampp/htdocs/oc/repo/'.$domain);
+    }
 
     public function randomPassword()
     {
@@ -48,7 +52,7 @@ Class ControllerInstallInstall extends Controller
         return implode($pass); //turn the array into a string
     }
 
-    function generateRandomString($length = 10)
+    public function generateRandomString($length = 10)
     {
         $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
         $charactersLength = strlen($characters);
@@ -85,7 +89,7 @@ Class ControllerInstallInstall extends Controller
             }
 
             // Deep copy directories
-            xcopy("$source/$entry", "$dest/$entry", $permissions);
+            $this->xcopy("$source/$entry", "$dest/$entry", $permissions);
         }
 
         // Clean up
