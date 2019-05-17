@@ -4,11 +4,15 @@ Class ControllerInstallInstall extends Controller
 {
     public function index()
     {
-        //print_r($this->createDatabase());
     }
 
     public function createTenant()
     {
+        // Create database and user
+        //$this->createDatabase();
+        // Install demodata
+        /* */
+        //Create demo folder
 
     }
 
