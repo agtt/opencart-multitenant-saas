@@ -1,0 +1,2 @@
+1) tool/image.php modification halde olması lazım
+2) admin dizaynın değişmesi gerek.

@@ -1,0 +1,9 @@
+.idea/*
+.idea
+image/cache/*
+image/catalog/*
+system/storage/*
+catalog/view/theme/journal3/assets/*
+repository/*
+repository
+*.log
