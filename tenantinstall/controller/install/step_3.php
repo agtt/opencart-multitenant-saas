@@ -11,6 +11,7 @@ class ControllerInstallStep3 extends Controller
             $this->load->model('install/install');
             $tenant = new MultiTenant(addslashes($this->request->post['domain']));
             $newtenant = $tenant->createTenant();
+            //$this->model_install_install->database($this->request->post);
             $output = '<?php' . "\n";
             $output .= '// DB' . "\n";
             $output .= 'define(\'DB_DRIVER\', \'' . addslashes($this->request->post['db_driver']) . '\');' . "\n";
@@ -24,8 +25,6 @@ class ControllerInstallStep3 extends Controller
             fwrite($file, $output);
             fclose($file);
             exit;
-
-            //$this->model_install_install->database($this->request->post);
 
             $this->response->redirect($this->url->link('install/step_4'));
         }
@@ -220,15 +219,15 @@ class ControllerInstallStep3 extends Controller
             $this->error['domain'] = 'Domain adı hatası';
         }
 
-       /* if (!$this->request->post['db_username']) {
-            $this->error['db_username'] = $this->language->get('error_db_username');
-        }
+        /* if (!$this->request->post['db_username']) {
+             $this->error['db_username'] = $this->language->get('error_db_username');
+         }
 
-        if (!$this->request->post['db_database']) {
-            $this->error['db_database'] = $this->language->get('error_db_database');
-        }
+         if (!$this->request->post['db_database']) {
+             $this->error['db_database'] = $this->language->get('error_db_database');
+         }
 
-*/
+ */
 
         if ($this->request->post['db_driver'] == 'mysqli') {
             try {
