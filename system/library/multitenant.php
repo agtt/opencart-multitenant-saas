@@ -41,8 +41,6 @@ class MultiTenant
             $this->db->query("CREATE USER '$dbname'@'localhost' IDENTIFIED BY '" . $pass . "'");
             $this->db->query("GRANT ALL ON `$dbname`.* TO '$dbname'@'localhost'");
             $this->db->query("FLUSH PRIVILEGES");
-            echo 'Başarılı';
-
         } catch (PDOException $e) {
             echo "DB ERROR: " . $e->getMessage();
             return false;

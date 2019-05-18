@@ -12,7 +12,7 @@ body {
 	margin: 0px;
 	padding: 0px;
 	line-height: 1.5;
-	background: #F6F6F6 url('../image/background.png');
+	/*background: #F6F6F6 url('../image/background.png');*/
 }
 body, p, td, th, input, textarea, select, option {
 	color: #777777;

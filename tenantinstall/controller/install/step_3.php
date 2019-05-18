@@ -24,6 +24,7 @@ class ControllerInstallStep3 extends Controller
             $file = fopen($tenant->path . '/config.php', 'w');
             fwrite($file, $output);
             fclose($file);
+            echo 'Success';
             exit;
 
             $this->response->redirect($this->url->link('install/step_4'));
@@ -241,6 +242,7 @@ class ControllerInstallStep3 extends Controller
 
  */
 
+        /*
         if ($this->request->post['db_driver'] == 'mysqli') {
             try {
                 $db = new \DB\MySQLi($this->request->post['db_hostname'], $this->request->post['db_username'], html_entity_decode($this->request->post['db_password'], ENT_QUOTES, 'UTF-8'), $this->request->post['db_database'], $this->request->post['db_port']);
@@ -262,6 +264,7 @@ class ControllerInstallStep3 extends Controller
                 $this->error['warning'] = $e->getMessage();
             }
         }
+        */
 
         if (!$this->request->post['username']) {
             $this->error['username'] = $this->language->get('error_username');

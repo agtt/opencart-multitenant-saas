@@ -4,12 +4,13 @@ $_['heading_title']          = 'Create Website';
 
 // Text
 $_['text_step_3']            = 'Enter your database and administration details';
-$_['text_db_connection']     = '1. Please enter your database connection details.';
+$_['text_db_connection']     = '1. Please enter your website details';
 $_['text_db_administration'] = '2. Please enter a username and password for the administration.';
 $_['text_mysqli']            = 'MySQLi';
 $_['text_mysql']             = 'MySQL';
 $_['text_mpdo']              = 'mPDO';
 $_['text_pgsql']             = 'PostgreSQL';
+$_['button_continue'] = 'Create Website';
 
 // Entry
 $_['entry_db_driver']        = 'DB Driver';
