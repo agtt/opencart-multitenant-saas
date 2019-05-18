@@ -1,0 +1,61 @@
+<table class="form">
+    <tr>
+        <td>
+            <div class="question">{{ text_question_data_import }}</div>
+            <div class="option">
+            	<input id="DataTypeProductsOptionImport" type="radio" name="ExcelPort[Import][DataType]" value="Products" {{ not data.ExcelPort.Import.DataType or data.ExcelPort.Import.DataType == 'Products' ? 'checked' }} /><label for="DataTypeProductsOptionImport">{{ text_datatype_option_products }}</label>
+            </div>
+            <div class="option">
+            	<input id="DataTypeCategoriesOptionImport" type="radio" name="ExcelPort[Import][DataType]" value="Categories" {{ data.ExcelPort.Import.DataType == 'Categories' ? 'checked' }} /><label for="DataTypeCategoriesOptionImport">{{ text_datatype_option_categories }}</label>
+            </div>
+            <div class="option">
+            	<input id="DataTypeOptionsOptionImport" type="radio" name="ExcelPort[Import][DataType]" value="Options" {{ data.ExcelPort.Import.DataType == 'Options' ? 'checked' }} /><label for="DataTypeOptionsOptionImport">{{ text_datatype_option_options }}</label>
+            </div>
+            <div class="option">
+            	<input id="DataTypeAttributesOptionImport" type="radio" name="ExcelPort[Import][DataType]" value="Attributes" {{ data.ExcelPort.Import.DataType == 'Attributes' ? 'checked' }} /><label for="DataTypeAttributesOptionImport">{{ text_datatype_option_attributes }}</label>
+            </div>
+            <div class="option">
+            	<input id="DataTypeCustomersOptionImport" type="radio" name="ExcelPort[Import][DataType]" value="Customers" {{ data.ExcelPort.Import.DataType == 'Customers' ? 'checked' }} /><label for="DataTypeCustomersOptionImport">{{ text_datatype_option_customers }}</label>
+            </div>
+            <div class="option">
+                <input id="DataTypeCustomerGroupsOptionImport" type="radio" name="ExcelPort[Import][DataType]" value="CustomerGroups" {{ data.ExcelPort.Import.DataType == 'CustomerGroups' ? 'checked' }} /><label for="DataTypeCustomerGroupsOptionImport">{{ text_datatype_option_customer_groups }}</label>
+            </div>
+            <div class="option">
+                <input id="DataTypeOrdersOptionImport" type="radio" name="ExcelPort[Import][DataType]" value="Orders" {{ data.ExcelPort.Import.DataType == 'Orders' ? 'checked' }} /><label for="DataTypeOrdersOptionImport">{{ text_datatype_option_orders }}</label>
+            </div>
+            <div class="option">
+                <input id="DataTypeManufacturersOptionImport" type="radio" name="ExcelPort[Import][DataType]" value="Manufacturers" {{ data.ExcelPort.Import.DataType == 'Manufacturers' ? 'checked' }} /><label for="DataTypeManufacturersOptionImport">{{ text_datatype_option_manufacturers }}</label>
+            </div>
+            <div class="option">
+                <input id="DataTypeCouponsOptionImport" type="radio" name="ExcelPort[Import][DataType]" value="Coupons" {{ data.ExcelPort.Import.DataType == 'Coupons' ? 'checked' }} /><label for="DataTypeCouponsOptionImport">{{ text_datatype_option_coupons }}</label>
+            </div>
+            <div class="option">
+                <input id="DataTypeVouchersOptionImport" type="radio" name="ExcelPort[Import][DataType]" value="Vouchers" {{ data.ExcelPort.Import.DataType == 'Vouchers' ? 'checked' }} /><label for="DataTypeVouchersOptionImport">{{ text_datatype_option_vouchers }}</label>
+            </div>
+            
+            <div class="question" data-depends-on="#DataTypeProductsOptionImport, #DataTypeCategoriesOptionImport, #DataTypeOptionsOptionImport, #DataTypeAttributesOptionImport, #DataTypeCustomersOptionImport, #DataTypeCustomerGroupsOptionImport, #DataTypeManufacturersOptionImport">{{ text_question_language_import }}</div>
+            {% for language in languages %}
+            <div class="option" data-depends-on="#DataTypeProductsOptionImport, #DataTypeCategoriesOptionImport, #DataTypeOptionsOptionImport, #DataTypeAttributesOptionImport, #DataTypeCustomersOptionImport, #DataTypeCustomerGroupsOptionImport, #DataTypeManufacturersOptionImport">
+            	<input id="Language{{ language.language_id }}OptionImport" type="radio" name="ExcelPort[Import][Language]" value="{{ language.language_id }}" {{ (not data.ExcelPort.Import.Language and loop.index0 == 0) or (data.ExcelPort.Import.Language == language.language_id) ? 'checked' }} /><label for="Language{{ language.language_id }}OptionImport">{{ language.name }}</label>
+            </div>
+            {% endfor %}
+            <div class="question">{{ text_question_file_import }}</div>
+            <div class="option">
+            	<input type="file" name="ExcelPort[Import][File]" />
+            </div>
+            <div class="question"><input id="checkboxDelete" type="checkbox" name="ExcelPort[Import][Delete]" value="1" /><label>{{ text_question_delete_other }}</label></div>
+            <div class="question" data-depends-on="#DataTypeProductsOptionImport, #DataTypeAttributesOptionImport, #DataTypeOptionsOptionImport, #DataTypeCustomersOptionImport, #DataTypeCustomerGroupsOptionImport, #DataTypeManufacturersOptionImport, #DataTypeCouponsOptionImport, #DataTypeVouchersOptionImport"><input id="checkboxAddAsNew" type="checkbox" name="ExcelPort[Import][AddAsNew]" value="1" {{ data.ExcelPort.Import.AddAsNew ? 'checked' }} /><label>{{ text_question_add_as_new }}</label></div>
+        </td>  
+    </tr>
+    <tr>
+        <td>
+            <input type="hidden" id="last_import_input" name="ExcelPort[LastImport]" value="{{ data.ExcelPort.LastImport ?? '' }}" />
+            <div style="margin-top: 15px;" id="last_import" data-template="{{ text_last_import }}" data-text="{{ data.ExcelPort.LastImport ?? '' }}">
+            </div>
+        	<div>
+        		<a data-action="import" class="btn btn-success continueAction ExcelPortSubmitButton">{{ button_import }}</a>
+            </div>
+			<div class="help"><strong>{{ text_note }}</strong> {{ text_supported_in_oc1541 }} <a class='needMoreSize' href="javascript:void(0)"><i class="fa fa-external-link"></i> {{ text_learn_to_increase }}</a></div>
+        </td>
+    </tr>
+</table>

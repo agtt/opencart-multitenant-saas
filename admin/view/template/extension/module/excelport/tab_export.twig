@@ -1,0 +1,312 @@
+{% if openstock_installed %}
+<div class="alert alert-success">{{ openstock_installed }}</div>
+{% endif %}
+<table class="form">
+    <tr>
+        <td>
+            <div class="question">{{ text_question_data }} <a id="filter_popover" rel="popover" data-toggle="popover" data-content="{{ text_toggle_filter }}" class="btn btn-default btn {{ data.ExcelPort.Export.Filter ? 'active' }}"><i class="fa fa-filter"></i></a></div>
+            <input type="hidden" id="toggle_filter" name="ExcelPort[Export][Filter]" value="{{ data.ExcelPort.Export.Filter ? '1' : '0' }}">
+            <div class="option">
+            	<input id="DataTypeProductsOption" type="radio" name="ExcelPort[Export][DataType]" value="Products" {{ not data.ExcelPort.Export.DataType or data.ExcelPort.Export.DataType == 'Products' ? 'checked' : '' }} /><label for="DataTypeProductsOption">{{ text_datatype_option_products }}</label>
+            </div>
+            <div class="dataTypeFilter" data-type="Products">
+            	<table>
+                	<thead>
+                    	<tr>
+                        	<td colspan="2">
+                            	{{ text_conjunction }} <select name="ExcelPort[Export][Filters][Products][Conjunction]" class="conjunctionSelect">
+                                	<option value="OR">OR</option>
+                                    <option value="AND" {{ data.ExcelPort.Export.Filters.Products.Conjunction == 'AND' ? 'selected' : '' }}>AND</option>
+                            	</select> <a data-toggle="tooltip" title="{{ help_conjunction }}"><i class="icon-info-sign"></i></a>
+                            </td>
+                        </tr>
+                    </thead>
+                	<tbody>
+                    	
+                    </tbody>
+                    <tfoot>
+                    	<tr>
+                        	<td></td>
+                            <td class="right"><a class="btn btn-success addCondition"><i class="icon-plus icon-white"></i> {{ button_add_condition }}</a></td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+            <div class="option">
+            	<input id="DataTypeCategoriesOption" type="radio" name="ExcelPort[Export][DataType]" value="Categories" {{ data.ExcelPort.Export.DataType == 'Categories' ? 'checked' : '' }} /><label for="DataTypeCategoriesOption">{{ text_datatype_option_categories }}</label>
+            </div>
+            <div class="dataTypeFilter" data-type="Categories">
+            	<table>
+                	<thead>
+                    	<tr>
+                        	<td colspan="2">
+                            	{{ text_conjunction }} <select name="ExcelPort[Export][Filters][Categories][Conjunction]" class="conjunctionSelect">
+                                	<option value="OR">OR</option>
+                                    <option value="AND" {{ data.ExcelPort.Export.Filters.Categories.Conjunction == 'AND' ? 'selected' : '' }}>AND</option>
+                            	</select> <a data-toggle="tooltip" title="{{ help_conjunction }}"><i class="icon-info-sign"></i></a>
+                            </td>
+                        </tr>
+                    </thead>
+                	<tbody>
+                    	
+                    </tbody>
+                    <tfoot>
+                    	<tr>
+                        	<td></td>
+                            <td class="right"><a class="btn btn-success addCondition"><i class="icon-plus icon-white"></i> {{ button_add_condition }}</a></td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+            <div class="option">
+            	<input id="DataTypeOptionsOption" type="radio" name="ExcelPort[Export][DataType]" value="Options" {{ data.ExcelPort.Export.DataType == 'Options' ? 'checked' : '' }} /><label for="DataTypeOptionsOption">{{ text_datatype_option_options }}</label>
+            </div>
+            <div class="dataTypeFilter" data-type="Options">
+            	<table>
+                	<thead>
+                    	<tr>
+                        	<td colspan="2">
+                            	{{ text_conjunction }} <select name="ExcelPort[Export][Filters][Options][Conjunction]" class="conjunctionSelect">
+                                	<option value="OR">OR</option>
+                                    <option value="AND" {{ data.ExcelPort.Export.Filters.Options.Conjunction == 'AND' ? 'selected' : '' }}>AND</option>
+                            	</select> <a data-toggle="tooltip" title="{{ help_conjunction }}"><i class="icon-info-sign"></i></a>
+                            </td>
+                        </tr>
+                    </thead>
+                	<tbody>
+                    	
+                    </tbody>
+                    <tfoot>
+                    	<tr>
+                        	<td></td>
+                            <td class="right"><a class="btn btn-success addCondition"><i class="icon-plus icon-white"></i> {{ button_add_condition }}</a></td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+            <div class="option">
+            	<input id="DataTypeAttributesOption" type="radio" name="ExcelPort[Export][DataType]" value="Attributes" {{ data.ExcelPort.Export.DataType == 'Attributes' ? 'checked' : '' }} /><label for="DataTypeAttributesOption">{{ text_datatype_option_attributes }}</label>
+            </div>
+        	<div class="dataTypeFilter" data-type="Attributes">
+            	<table>
+                	<thead>
+                    	<tr>
+                        	<td colspan="2">
+                            	{{ text_conjunction }} <select name="ExcelPort[Export][Filters][Attributes][Conjunction]" class="conjunctionSelect">
+                                	<option value="OR">OR</option>
+                                    <option value="AND" {{ data.ExcelPort.Export.Filters.Attributes.Conjunction == 'AND' ? 'selected' : '' }}>AND</option>
+                            	</select> <a data-toggle="tooltip" title="{{ help_conjunction }}"><i class="icon-info-sign"></i></a>
+                            </td>
+                        </tr>
+                    </thead>
+                	<tbody>
+                    	
+                    </tbody>
+                    <tfoot>
+                    	<tr>
+                        	<td></td>
+                            <td class="right"><a class="btn btn-success addCondition"><i class="icon-plus icon-white"></i> {{ button_add_condition }}</a></td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+            <div class="option">
+            	<input id="DataTypeCustomersOption" type="radio" name="ExcelPort[Export][DataType]" value="Customers" {{ data.ExcelPort.Export.DataType == 'Customers' ? 'checked' : '' }} /><label for="DataTypeCustomersOption">{{ text_datatype_option_customers }}</label>
+            </div>
+            <div class="dataTypeFilter" data-type="Customers">
+            	<table>
+                	<thead>
+                    	<tr>
+                        	<td colspan="2">
+                            	{{ text_conjunction }} <select name="ExcelPort[Export][Filters][Customers][Conjunction]" class="conjunctionSelect">
+                                	<option value="OR">OR</option>
+                                    <option value="AND" {{ data.ExcelPort.Export.Filters.Customers.Conjunction == 'AND' ? 'selected' : '' }}>AND</option>
+                            	</select> <a data-toggle="tooltip" title="{{ help_conjunction }}"><i class="icon-info-sign"></i></a>
+                            </td>
+                        </tr>
+                    </thead>
+                	<tbody>
+                    	
+                    </tbody>
+                    <tfoot>
+                    	<tr>
+                        	<td></td>
+                            <td class="right"><a class="btn btn-success addCondition"><i class="icon-plus icon-white"></i> {{ button_add_condition }}</a></td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+            <div class="option">
+            	<input id="DataTypeCustomerGroupsOption" type="radio" name="ExcelPort[Export][DataType]" value="CustomerGroups" {{ data.ExcelPort.Export.DataType == 'CustomerGroups' ? 'checked' : '' }} /><label for="DataTypeCustomerGroupsOption">{{ text_datatype_option_customer_groups }}</label>
+            </div>
+            <div class="dataTypeFilter" data-type="CustomerGroups">
+            	<table>
+                	<thead>
+                    	<tr>
+                        	<td colspan="2">
+                            	{{ text_conjunction }} <select name="ExcelPort[Export][Filters][CustomerGroups][Conjunction]" class="conjunctionSelect">
+                                	<option value="OR">OR</option>
+                                    <option value="AND" {{ data.ExcelPort.Export.Filters.CustomerGroups.Conjunction == 'AND' ? 'selected' : '' }}>AND</option>
+                            	</select> <a data-toggle="tooltip" title="{{ help_conjunction }}"><i class="icon-info-sign"></i></a>
+                            </td>
+                        </tr>
+                    </thead>
+                	<tbody>
+                    	
+                    </tbody>
+                    <tfoot>
+                    	<tr>
+                        	<td></td>
+                            <td class="right"><a class="btn btn-success addCondition"><i class="icon-plus icon-white"></i> {{ button_add_condition }}</a></td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+            <div class="option">
+            	<input id="DataTypeOrdersOption" type="radio" name="ExcelPort[Export][DataType]" value="Orders" {{ data.ExcelPort.Export.DataType == 'Orders' ? 'checked' : '' }} /><label for="DataTypeOrdersOption">{{ text_datatype_option_orders }}</label>
+            </div>
+            <div class="dataTypeFilter" data-type="Orders">
+            	<table>
+                	<thead>
+                    	<tr>
+                        	<td colspan="2">
+                            	{{ text_conjunction }} <select name="ExcelPort[Export][Filters][Orders][Conjunction]" class="conjunctionSelect">
+                                	<option value="OR">OR</option>
+                                    <option value="AND" {{ data.ExcelPort.Export.Filters.Orders.Conjunction == 'AND' ? 'selected' : '' }}>AND</option>
+                            	</select> <a data-toggle="tooltip" title="{{ help_conjunction }}"><i class="icon-info-sign"></i></a>
+                            </td>
+                        </tr>
+                    </thead>
+                	<tbody>
+                    	
+                    </tbody>
+                    <tfoot>
+                    	<tr>
+                        	<td></td>
+                            <td class="right"><a class="btn btn-success addCondition"><i class="icon-plus icon-white"></i> {{ button_add_condition }}</a></td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+            <div class="option">
+                <input id="DataTypeManufacturersOption" type="radio" name="ExcelPort[Export][DataType]" value="Manufacturers" {{ data.ExcelPort.Export.DataType == 'Manufacturers' ? 'checked' : '' }} /><label for="DataTypeManufacturersOption">{{ text_datatype_option_manufacturers }}</label>
+            </div>
+            <div class="dataTypeFilter" data-type="Manufacturers">
+                <table>
+                    <thead>
+                        <tr>
+                            <td colspan="2">
+                                {{ text_conjunction }} <select name="ExcelPort[Export][Filters][Manufacturers][Conjunction]" class="conjunctionSelect">
+                                    <option value="OR">OR</option>
+                                    <option value="AND" {{ data.ExcelPort.Export.Filters.Manufacturers.Conjunction == 'AND' ? 'selected' : '' }}>AND</option>
+                                </select> <a data-toggle="tooltip" title="{{ help_conjunction }}"><i class="icon-info-sign"></i></a>
+                            </td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <td></td>
+                            <td class="right"><a class="btn btn-success addCondition"><i class="icon-plus icon-white"></i> {{ button_add_condition }}</a></td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+
+            <div class="option">
+                <input id="DataTypeCouponsOption" type="radio" name="ExcelPort[Export][DataType]" value="Coupons" {{ data.ExcelPort.Export.DataType == 'Coupons' ? 'checked' : '' }} /><label for="DataTypeCouponsOption">{{ text_datatype_option_coupons }}</label>
+            </div>
+            <div class="dataTypeFilter" data-type="Coupons">
+                <table>
+                    <thead>
+                        <tr>
+                            <td colspan="2">
+                                {{ text_conjunction }} <select name="ExcelPort[Export][Filters][Coupons][Conjunction]" class="conjunctionSelect">
+                                    <option value="OR">OR</option>
+                                    <option value="AND" {{ data.ExcelPort.Export.Filters.Coupons.Conjunction == 'AND' ? 'selected' : '' }}>AND</option>
+                                </select> <a data-toggle="tooltip" title="{{ help_conjunction }}"><i class="icon-info-sign"></i></a>
+                            </td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <td></td>
+                            <td class="right"><a class="btn btn-success addCondition"><i class="icon-plus icon-white"></i> {{ button_add_condition }}</a></td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+
+            <div class="option">
+                <input id="DataTypeVouchersOption" type="radio" name="ExcelPort[Export][DataType]" value="Vouchers" {{ data.ExcelPort.Export.DataType == 'Vouchers' ? 'checked' : '' }} /><label for="DataTypeVouchersOption">{{ text_datatype_option_vouchers }}</label>
+            </div>
+            <div class="dataTypeFilter" data-type="Vouchers">
+                <table>
+                    <thead>
+                        <tr>
+                            <td colspan="2">
+                                {{ text_conjunction }} <select name="ExcelPort[Export][Filters][Vouchers][Conjunction]" class="conjunctionSelect">
+                                    <option value="OR">OR</option>
+                                    <option value="AND" {{ data.ExcelPort.Export.Filters.Vouchers.Conjunction == 'AND' ? 'selected' : '' }}>AND</option>
+                                </select> <a data-toggle="tooltip" title="{{ help_conjunction }}"><i class="icon-info-sign"></i></a>
+                            </td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <td></td>
+                            <td class="right"><a class="btn btn-success addCondition"><i class="icon-plus icon-white"></i> {{ button_add_condition }}</a></td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+            
+            <div data-depends-on="#DataTypeProductsOption, #DataTypeCategoriesOption, #DataTypeCustomersOption, #DataTypeManufacturersOption" class="question">{{ text_question_store }}</div>
+            <div data-depends-on="#DataTypeProductsOption, #DataTypeCategoriesOption, #DataTypeCustomersOption, #DataTypeManufacturersOption" class="option">
+            	<input id="Store0Option" type="radio" name="ExcelPort[Export][Store]" value="0" {{ not data.ExcelPort.Export.Store ? 'checked' }} /><label for="Store0Option">{{ default_store_name }}</label>
+            </div>
+            {% for store in stores %}
+            <div data-depends-on="#DataTypeProductsOption, #DataTypeCategoriesOption, #DataTypeCustomersOption, #DataTypeManufacturersOption" class="option">
+            	<input id="Store{{ store.store_id }}Option" type="radio" name="ExcelPort[Export][Store]" value="{{ store.store_id }}" {{ data.ExcelPort.Export.Store == store.store_id ? 'checked' }}/><label for="Store{{ store.store_id }}Option">{{ store.name }}</label>
+            </div>
+            {% endfor %}
+            
+            <div data-depends-on="#DataTypeProductsOption, #DataTypeCategoriesOption, #DataTypeOptionsOption, #DataTypeAttributesOption, #DataTypeCustomersOption, #DataTypeCustomerGroupsOption, #DataTypeManufacturersOption" class="question">{{ text_question_language }}</div>
+
+            {% for language in languages %}
+            <div data-depends-on="#DataTypeProductsOption, #DataTypeCategoriesOption, #DataTypeOptionsOption, #DataTypeAttributesOption, #DataTypeCustomersOption, #DataTypeCustomerGroupsOption, #DataTypeManufacturersOption" class="option">
+            	<input id="Language{{ language.language_id }}Option" type="radio" name="ExcelPort[Export][Language]" value="{{ language.language_id }}" {{ (not data.ExcelPort.Export.Language and loop.index0 == 0) or (data.ExcelPort.Export.Language == language.language_id) ? 'checked' }} /><label for="Language{{ language.language_id }}Option">{{ language.name }}</label>
+            </div>
+            {% endfor %}
+            
+            <div class="question" data-depends-on="#DataTypeProductsOption">
+                <p>{{ text_question_product_type }}</p>
+            </div>
+            <div class="question" data-depends-on="#DataTypeProductsOption">
+                <input type="radio" name="ExcelPort[Export][ProductExportMode]" {{ not data.ExcelPort.Export.ProductExportMode or data.ExcelPort.Export.ProductExportMode == '0' ? 'checked' }} value="0" id="radioBulkExport" /><label for="radioBulkExport">{{ text_question_product_type_bulk }}</label>
+            </div>
+            <div class="question" data-depends-on="#DataTypeProductsOption">
+                <input type="radio" name="ExcelPort[Export][ProductExportMode]" {{ data.ExcelPort.Export.ProductExportMode == '2' ? 'checked' }} value="2" id="radioFullExport" /><label for="radioFullExport">{{ text_question_product_type_full }}</label>
+            </div>
+            <div class="question" data-depends-on="#DataTypeProductsOption">
+                <input type="radio" name="ExcelPort[Export][ProductExportMode]" {{ data.ExcelPort.Export.ProductExportMode == '1' ? 'checked' }} value="1" id="radioQuickExport" /><label for="radioQuickExport">{{ text_question_product_type_quick }}</label>
+            </div>
+        </td>  
+    </tr>
+    <tr>
+        <td>
+        	<div>
+        		<a data-action="export" class="btn btn-success continueAction ExcelPortSubmitButton">{{ button_export }}</a>
+            </div>
+			<div class="help"><strong>{{ text_note }}</strong> {{ text_supported_in_oc1541 }} <a class='needMoreSize' href="javascript:void(0)"><i class="fa fa-external-link"></i> {{ text_learn_to_increase }}</a></div>
+        </td>  
+    </tr>
+</table>

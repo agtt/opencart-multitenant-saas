@@ -1,0 +1,99 @@
+<div class="row">
+    <div class="col-md-4">
+        <div class="panel">
+            <div class="panel-heading">
+                <h3 class="panel-title"><i class="fa fa-user"></i> {{ license_your_license }}</h3>
+            </div>
+            <div class="panel-body">
+            {% if not data.ExcelPort.LicensedOn %}
+                <div class="form-group">
+                    <label for="moduleLicense">{{ license_enter_code }}</label>
+                    <div class="licenseAlerts"></div>
+                    <div class="licenseDiv"></div>
+                    <input type="text" class="licenseCodeBox form-control" placeholder="{{ license_placeholder }}" value="{{ license_code ?? '' }}" />
+                </div>
+
+                <div class="form-group">
+                    <button type="button" class="btn btn-success btnActivateLicense"><i class="icon-ok"></i> {{ license_activate }}</button>
+                    <div class="pull-right">
+                        <button type="button" class="btn btn-link small-link" onclick="window.open('http://isenselabs.com/users/purchases/')">{{ license_get_code }} <i class="fa fa-external-link"></i></button>
+                    </div>
+                </div>
+                <script type="text/javascript">
+                    var domainraw = location.protocol + '//' + location.host;
+                    var domain = btoa(domainraw);
+                    var timenow = {{ now }};
+                    var MID = 'TBY2PJCCI7';
+                </script>
+                <script type="text/javascript" src="//isenselabs.com/external/validate/"></script>
+            {% endif %}
+
+            {% if data.ExcelPort.LicensedOn %}
+                <input name="cHRpbWl6YXRpb24ef4fe" type="hidden" value="{{ licenseEncoded }}" />
+                <input name="OaXRyb1BhY2sgLSBDb21" type="hidden" value="{{ data.ExcelPort.LicensedOn }}" />
+
+                <div class="row">
+                    <label class="license_label">{{ license_holder }}</label>
+                    <span class="license_info">{{ data.ExcelPort.License.customerName }}</span>
+                </div>
+                <div class="row">
+                    <label class="license_label">{{ license_registered_domains }}</label>
+                    <ul class="license_info">
+                        {% for domain in data.ExcelPort.License.licenseDomainsUsed %}
+                            <li><i class="fa fa-check"></i>&nbsp;{{ domain }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+                <div class="row">
+                    <label class="license_label">{{ license_expires }}</label>
+                    <span class="license_info">{{ expiration_date }}</span>
+
+                    <div class="alert alert-success center">{{ license_valid }} [<a href="http://isenselabs.com/users/purchases" target="_blank">{{ license_manage }}</a>]</div>
+                </div>
+            {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-8">
+        <div class="panel">
+            <div class="panel-heading">
+                <h3 class="panel-title"><i class="fa fa-users"></i> {{ license_get_support }}</h3>
+            </div>
+            <div class="panel-body">
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="thumbnail">
+                            <img alt="{{ license_community }}" src="view/image/excelport/community.png">
+                            <div class="caption center">
+                                <h3>{{ license_community }}</h3>
+                                <p>{{ license_community_info }}</p>
+                                <p style="padding-top: 5px;"><a href="http://isenselabs.com/forum" target="_blank" class="btn btn-lg btn-default">{{ license_forums }}</a></p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="thumbnail">
+                            <img data-src="holder.js/300x200" alt="Ticket support" src="view/image/excelport/tickets.png">
+                            <div class="caption center">
+                                <h3>{{ license_tickets }}</h3>
+                                <p>{{ license_tickets_info }}</p>
+                                <p style="padding-top: 5px;"><a href="http://isenselabs.com/tickets/open/{{ support_path }}" target="_blank" class="btn btn-lg btn-default">{{ license_tickets_open }}</a></p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="thumbnail">
+                            <img alt="{{ license_presale }}" src="view/image/excelport/pre-sale.png">
+                            <div class="caption center">
+                                <h3>{{ license_presale }}</h3>
+                                <p>{{ license_presale_info }}</p>
+                                <p style="padding-top: 5px;"><a href="https://isenselabs.com/pages/premium-services" target="_blank" class="btn btn-lg btn-default">{{ license_presale_bump }}</a></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
