@@ -1,0 +1,1486 @@
+{{ header }}{{ column_left }}
+<div id="content">
+  <div class="page-header">
+    <div class="container-fluid">
+      <div class="pull-right">
+        <a href="{{ cancel }}" data-toggle="tooltip" title="{{ button_cancel }}" class="btn btn-default"><i class="fa fa-reply"></i></a></div>
+      <h1>{{ heading_title }}</h1>
+      <ul class="breadcrumb">
+        {% for breadcrumb in breadcrumbs %}
+        <li><a href="{{ breadcrumb['href'] }}">{{ breadcrumb['text'] }}</a></li>
+        {% endfor %}
+      </ul>
+    </div>
+  </div>
+  
+  <div class="container-fluid"> <!-- continut -->
+    {% if error_warning %}
+    <div class="alert alert-danger alert-dismissible"><i class="fa fa-exclamation-circle"></i> {{ error_warning }}
+      <button type="button" class="close" data-dismiss="alert">&times;</button>
+    </div>
+    {% endif %}
+    {% if success %}
+    <div class="alert alert-success"><i class="fa fa-check-circle"></i> {{ success }}
+      <button type="button" class="close" data-dismiss="alert">&times;</button>
+    </div>
+    {% endif %}
+    
+    <form action="{{ action }}" method="post" enctype="multipart/form-data" class="form-horizontal">
+    
+    <div class="panel panel-default"> <!-- filters div -->
+      
+      <div class="panel-heading">
+        <h3 class="panel-title"><i class="fa fa-list"></i> {{ masstxt_p_filters_h }}</h3>
+        
+        
+        <br />
+        <a id="allfilters_more" class="more_less">{{ masstxt_show_f }} <i class="fa fa-chevron-down"></i></a> 
+        <a id="allfilters_less" class="more_less">{{ masstxt_hide_f }} <i class="fa fa-chevron-up"></i></a>
+        
+        
+      </div>
+      
+      <div class="panel-body">
+      <div class="table-responsive">
+    	<table class="table table-bordered table-hover"> <!-- filters table -->
+    	<tbody>
+
+    	<tr class="allfilters_row">
+    	  <td class="text-left coloana1">
+    	  <strong>{{ masstxt_name }}</strong>
+    	  </td>
+    	  <td class="text-left">
+    	  <input type="text" value="{{ filter_name }}" name="filter_name" class="fil_control3">
+    	  <label class="control-label"><span data-toggle="tooltip" title="{{ masstxt_name_help }}"></span></label>
+    	  </td>
+    	</tr>
+
+    	<tr class="allfilters_row">
+    	  <td class="text-left">
+    	  <strong>{{ masstxt_tag }}</strong>
+    	  </td>
+    	  <td class="text-left">
+    	  <input type="text" value="{{ filter_tag }}" name="filter_tag" class="fil_control3">
+    	  <label class="control-label"><span data-toggle="tooltip" title="{{ masstxt_tag_help }}"></span></label>
+    	  </td>
+    	</tr>
+
+    	<tr class="allfilters_row">
+    	  <td class="text-left">
+    	  <strong>{{ masstxt_model }}</strong>
+    	  </td>
+    	  <td class="text-left">
+    	  <input type="text" value="{{ filter_model }}" name="filter_model" class="fil_control3">
+    	  <label class="control-label"><span data-toggle="tooltip" title="{{ masstxt_model_help }}"></span></label>
+    	  </td>
+    	</tr>
+
+    	<tr class="allfilters_row">
+    	  <td class="text-left">
+    	  <strong>{{ masstxt_categories }}</strong>
+    	  </td>
+    	  <td class="text-left">
+              <div class="well well-sm scroll1 categs_div">
+                {% set stl = 'bg_row_1' %}
+                <div class="checkbox {{ stl }}">
+                  <label>
+                    {% if 0 in product_category %}
+                    <input type="checkbox" name="product_category[]" value="0" checked="checked" />{{ masstxt_none_cat }}
+                    {% else %}
+                    <input type="checkbox" name="product_category[]" value="0" />{{ masstxt_none_cat }}
+                    {% endif %}
+                  </label>
+                </div>
+                {% for category in categories %}
+                {% set stl = (stl == 'bg_row_2' ? 'bg_row_1' : 'bg_row_2') %}
+                <div class="checkbox {{ stl }}">
+                  <label>
+                    {% if category['category_id'] in product_category %}
+                    <input type="checkbox" name="product_category[]" value="{{ category['category_id'] }}" checked="checked" />
+                    {{ category['name'] }}
+                    {% else %}
+                    <input type="checkbox" name="product_category[]" value="{{ category['category_id'] }}" />
+                    {{ category['name'] }}
+                    {% endif %}
+                  </label>
+                </div>
+                {% endfor %}
+              </div>
+              <div class="sub_scroll1">
+                <a id="categs_more" class="more_less">{{ masstxt_show_more_r }} <i class="fa fa-chevron-down"></i></a> 
+                <a id="categs_less" class="more_less">{{ masstxt_show_less_r }} <i class="fa fa-chevron-up"></i></a> 
+                <a onclick="$(this).parent().parent().find(':checkbox').prop('checked', true);">{{ masstxt_select_all }}</a> / <a onclick="$(this).parent().parent().find(':checkbox').prop('checked', false);">{{ masstxt_unselect_all }}</a>
+                <label class="control-label tooltip1"><span data-toggle="tooltip" title="{{ masstxt_unselect_all_to_ignore }}"></span></label>
+              </div>
+    	  </td>
+    	</tr>
+
+    	<tr class="allfilters_row">
+    	  <td class="text-left">
+    	  <strong>{{ masstxt_manufacturers }}</strong>
+    	  </td>
+    	  <td class="text-left">
+              <div class="well well-sm scroll1 manufacts_div">
+                {% set stl = 'bg_row_1' %}
+                <div class="checkbox {{ stl }}">
+                  <label>
+                    {% if 0 in manufacturer_ids %}
+                    <input type="checkbox" name="manufacturer_ids[]" value="0" checked="checked" />{{ masstxt_none }}
+                    {% else %}
+                    <input type="checkbox" name="manufacturer_ids[]" value="0" />{{ masstxt_none }}
+                    {% endif %}
+                  </label>
+                </div>
+                {% for manufacturer in manufacturers %}
+                {% set stl = (stl == 'bg_row_2' ? 'bg_row_1' : 'bg_row_2') %}
+                <div class="checkbox {{ stl }}">
+                  <label>
+                    {% if manufacturer['manufacturer_id'] in manufacturer_ids %}
+                    <input type="checkbox" name="manufacturer_ids[]" value="{{ manufacturer['manufacturer_id'] }}" checked="checked" />
+                    {{ manufacturer['name'] }}
+                    {% else %}
+                    <input type="checkbox" name="manufacturer_ids[]" value="{{ manufacturer['manufacturer_id'] }}" />
+                    {{ manufacturer['name'] }}
+                    {% endif %}
+                  </label>
+                </div>
+                {% endfor %}
+              </div>
+              <div class="sub_scroll1">
+                <a id="manufacts_more" class="more_less">{{ masstxt_show_more_r }} <i class="fa fa-chevron-down"></i></a> 
+                <a id="manufacts_less" class="more_less">{{ masstxt_show_less_r }} <i class="fa fa-chevron-up"></i></a> 
+                <a onclick="$(this).parent().parent().find(':checkbox').prop('checked', true);">{{ masstxt_select_all }}</a> / <a onclick="$(this).parent().parent().find(':checkbox').prop('checked', false);">{{ masstxt_unselect_all }}</a>
+                <label class="control-label tooltip1"><span data-toggle="tooltip" title="{{ masstxt_unselect_all_to_ignore }}"></span></label>
+              </div>
+    	  </td>
+    	</tr>
+
+    	<tr class="allfilters_row">
+    	  <td class="text-left">
+    	  <strong>{{ masstxt_p_filters }}</strong>
+    	  </td>
+    	  <td class="text-left">
+    	  {% if p_filters %}
+              <div class="well well-sm scroll1 filts_div">
+                {% set stl = 'bg_row_1' %}
+                <div class="checkbox {{ stl }}">
+                  <label>
+                    {% if 0 in filters_ids %}
+                    <input type="checkbox" name="filters_ids[]" value="0" checked="checked" />{{ masstxt_none_fil }}
+                    {% else %}
+                    <input type="checkbox" name="filters_ids[]" value="0" />{{ masstxt_none_fil }}
+                    {% endif %}
+                  </label>
+                </div>
+                {% for p_filter in p_filters %}
+                {% set stl = (stl == 'bg_row_2' ? 'bg_row_1' : 'bg_row_2') %}
+                <div class="checkbox {{ stl }}">
+                  <label>
+                    {% if p_filter['filter_id'] in filters_ids %}
+                    <input type="checkbox" name="filters_ids[]" value="{{ p_filter['filter_id'] }}" checked="checked" />
+                    {{ p_filter['group'] }} &gt; {{ p_filter['name'] }}
+                    {% else %}
+                    <input type="checkbox" name="filters_ids[]" value="{{ p_filter['filter_id'] }}" />
+                    {{ p_filter['group'] }} &gt; {{ p_filter['name'] }}
+                    {% endif %}
+                  </label>
+                </div>
+                {% endfor %}
+              </div>
+              <div class="sub_scroll1">
+                <a id="filts_more" class="more_less">{{ masstxt_show_more_r }} <i class="fa fa-chevron-down"></i></a> 
+                <a id="filts_less" class="more_less">{{ masstxt_show_less_r }} <i class="fa fa-chevron-up"></i></a> 
+                <a onclick="$(this).parent().parent().find(':checkbox').prop('checked', true);">{{ masstxt_select_all }}</a> / <a onclick="$(this).parent().parent().find(':checkbox').prop('checked', false);">{{ masstxt_unselect_all }}</a>
+                <label class="control-label tooltip1"><span data-toggle="tooltip" title="{{ masstxt_unselect_all_to_ignore }}"></span></label>
+              </div>
+    	  {% else %}
+    	    {{ masstxt_p_filters_none }}
+    	  {% endif %}
+    	  </td>
+    	</tr>
+
+
+
+    	<tr class="allfilters_row">
+    	  <td class="text-left">
+    	  <strong>{{ masstxt_p_data }}</strong>
+    	  </td>
+    	  <td class="text-left">
+
+    	  <label class="fil_label5">{{ masstxt_SKU }} </label>
+    	  <span class="fil_right_box5">
+    	    <input type="text" value="{{ filter_sku }}" name="filter_sku" class="fil_control5">
+    	  </span>
+
+    	  <label class="fil_label5">{{ masstxt_UPC }} </label>
+    	  <span class="fil_right_box5">
+    	    <input type="text" value="{{ filter_upc }}" name="filter_upc" class="fil_control5">
+    	  </span>
+
+    	  <label class="fil_label5">{{ masstxt_EAN }} </label>
+    	  <span class="fil_right_box5">
+    	    <input type="text" value="{{ filter_ean }}" name="filter_ean" class="fil_control5">
+    	  </span>
+
+    	  <label class="fil_label5">{{ masstxt_JAN }} </label>
+    	  <span class="fil_right_box5">
+    	    <input type="text" value="{{ filter_jan }}" name="filter_jan" class="fil_control5">
+    	  </span>
+
+    	  <label class="fil_label5">{{ masstxt_ISBN }} </label>
+    	  <span class="fil_right_box5">
+    	    <input type="text" value="{{ filter_isbn }}" name="filter_isbn" class="fil_control5">
+    	  </span>
+
+    	  <label class="fil_label5">{{ masstxt_MPN }} </label>
+    	  <span class="fil_right_box5">
+    	    <input type="text" value="{{ filter_mpn }}" name="filter_mpn" class="fil_control5">
+    	  </span>
+
+    	  <label class="fil_label5">{{ masstxt_location }} </label>
+    	  <span class="fil_right_box5">
+    	    <input type="text" value="{{ filter_location }}" name="filter_location" class="fil_control5">
+    	  </span>
+    	  </td>
+    	</tr>
+
+
+
+    	<tr class="allfilters_row">
+    	  <td class="text-left">
+    	  <strong>{{ masstxt_price }}</strong>
+    	  <span class="help"> {{ masstxt_price_help }}</span>
+    	  </td>
+    	  <td class="text-left">
+    	  
+    	  <label class="fil_label1">{{ masstxt_greater_than_or_equal }} </label>
+    	  <span class="fil_right_box1">
+    	    <input type="text" value="{{ price_mmarese }}" name="price_mmarese" class="fil_control1">
+    	  </span>
+    	  
+    	  <label class="fil_label1">{{ masstxt_less_than_or_equal }} </label>
+    	  <span class="fil_right_box1">
+    	    <input type="text" value="{{ price_mmicse }}" name="price_mmicse" class="fil_control1">
+    	  </span>
+    	  </td>
+    	</tr>
+
+
+
+    	<tr class="allfilters_row">
+    	  <td class="text-left">
+    	  <strong>{{ masstxt_discount }}</strong>
+    	  </td>
+    	  <td class="text-left">
+    	  
+    	  <label class="fil_label1">{{ masstxt_customer_group }} </label>
+    	  <span class="fil_right_box1">
+    	    <select name="d_cust_group_filter" class="fil_control1">
+    	      <option value="any"{% if d_cust_group_filter=='any' %} {{ ' selected="selected"' }} {% endif %}>{{ masstxt_all }}</option>
+    	      {% for customer_group in customer_groups %}
+    	        <option value="{{ customer_group['customer_group_id'] }}"{% if customer_group['customer_group_id']==d_cust_group_filter %} {{ ' selected="selected"' }} {% endif %}>{{ customer_group['name'] }}</option>
+    	      {% endfor %}
+    	    </select>
+    	  </span>
+    	      	  
+    	  <label class="fil_label1">{{ masstxt_price_from }} </label>
+    	  <span class="fil_right_box1">
+    	    <input type="text" value="{{ d_price_mmarese }}" name="d_price_mmarese" class="fil_control1">
+    	  </span>
+    	  
+    	  <label class="fil_label1">{{ masstxt_price_to }} </label>
+    	  <span class="fil_right_box1">
+    	    <input type="text" value="{{ d_price_mmicse }}" name="d_price_mmicse" class="fil_control1">
+    	  </span>
+
+    	  <label class="fil_label1">{{ masstxt_date_start }} </label>
+    	  <span class="fil_right_box1">
+    	    <input class="date fil_control1" type="text" value="{{ d_date_start }}" name="d_date_start" data-date-format="YYYY-MM-DD">
+    	  </span>
+
+    	  <label class="fil_label1">{{ masstxt_date_end }} </label>
+    	  <span class="fil_right_box1">
+    	    <input class="date fil_control1" type="text" value="{{ d_date_end }}" name="d_date_end" data-date-format="YYYY-MM-DD">
+    	  </span>
+    	  </td>
+    	</tr>
+
+
+
+    	<tr class="allfilters_row">
+    	  <td class="text-left">
+    	  <strong>{{ masstxt_special }}</strong>
+    	  </td>
+    	  <td class="text-left">
+    	  
+    	  <label class="fil_label1">{{ masstxt_customer_group }} </label>
+    	  <span class="fil_right_box1">
+    	    <select name="s_cust_group_filter" class="fil_control1">
+    	      <option value="any"{% if s_cust_group_filter=='any' %} {{ ' selected="selected"' }} {% endif %}>{{ masstxt_all }}</option>
+    	      {% for customer_group in customer_groups %}
+    	        <option value="{{ customer_group['customer_group_id'] }}"{% if customer_group['customer_group_id']==s_cust_group_filter %} {{ ' selected="selected"' }} {% endif %}>{{ customer_group['name'] }}</option>
+    	      {% endfor %}
+    	    </select>
+    	  </span>
+    	  
+    	  <label class="fil_label1">{{ masstxt_price_from }} </label>
+    	  <span class="fil_right_box1">
+    	    <input type="text" value="{{ s_price_mmarese }}" name="s_price_mmarese" class="fil_control1">
+    	  </span>
+    	  
+    	  <label class="fil_label1">{{ masstxt_price_to }} </label>
+    	  <span class="fil_right_box1">
+    	    <input type="text" value="{{ s_price_mmicse }}" name="s_price_mmicse" class="fil_control1">
+    	  </span>
+ 
+    	  <label class="fil_label1">{{ masstxt_date_start }} </label>
+    	  <span class="fil_right_box1">
+    	    <input class="date fil_control1" type="text" value="{{ s_date_start }}" name="s_date_start" data-date-format="YYYY-MM-DD">
+    	  </span>
+
+    	  <label class="fil_label1">{{ masstxt_date_end }} </label>
+    	  <span class="fil_right_box1">
+    	    <input class="date fil_control1" type="text" value="{{ s_date_end }}" name="s_date_end" data-date-format="YYYY-MM-DD">
+    	  </span>
+    	  </td>
+    	</tr>
+
+
+
+    	<tr class="allfilters_row">
+    	  <td class="text-left">
+    	  <strong>{{ masstxt_reward_points }}</strong>
+    	  </td>
+    	  <td class="text-left">
+    	  
+    	  <label class="fil_label0">{{ masstxt_points_from }}</label>
+    	  <label class="control-label"><span data-toggle="tooltip" title="{{ masstxt_points_help }}"></span></label>
+    	  <span class="fil_right_box1">
+    	    <input type="text" value="{{ points_mmarese }}" name="points_mmarese" class="fil_control1">
+    	  </span>
+    	  
+    	  <label class="fil_label0">{{ masstxt_points_to }}</label>
+    	  <label class="control-label"><span data-toggle="tooltip" title="{{ masstxt_points_help }}"></span></label>
+    	  <span class="fil_right_box1">
+    	    <input type="text" value="{{ points_mmicse }}" name="points_mmicse" class="fil_control1">
+    	  </span>
+    	  
+    	  <label class="fil_label1">{{ masstxt_customer_group }} </label>
+    	  <span class="fil_right_box1">
+    	    <select name="r_p_cust_group_filter" class="fil_control1">
+    	      <option value="any"{% if r_p_cust_group_filter=='any' %} {{ ' selected="selected"' }} {% endif %}>{{ masstxt_all }}</option>
+    	      {% for customer_group in customer_groups %}
+    	        <option value="{{ customer_group['customer_group_id'] }}"{% if customer_group['customer_group_id']==r_p_cust_group_filter %} {{ ' selected="selected"' }} {% endif %}>{{ customer_group['name'] }}</option>
+    	      {% endfor %}
+    	    </select>
+    	  </span>
+    	  
+    	  <label class="fil_label1">{{ masstxt_r_points_from }} </label>
+    	  <span class="fil_right_box1">
+    	    <input type="text" value="{{ r_p_mmarese }}" name="r_p_mmarese" class="fil_control1">
+    	  </span>
+    	  
+    	  <label class="fil_label1">{{ masstxt_r_points_to }} </label>
+    	  <span class="fil_right_box1">
+    	    <input type="text" value="{{ r_p_mmicse }}" name="r_p_mmicse" class="fil_control1">
+    	  </span>
+    	  </td>
+    	</tr>
+
+
+
+    	<tr class="allfilters_row">
+    	  <td class="text-left">
+    	  <strong>{{ masstxt_tax_class }}</strong>
+    	  </td>
+    	  <td class="text-left">
+    	  <select name="tax_class_filter" class="fil_control4">
+    	  <option value="any"{% if tax_class_filter=='any' %} {{ ' selected="selected"' }} {% endif %}>{{ masstxt_ignore_this }}</option>
+    	  <option value="0"{% if tax_class_filter=='0' %} {{ ' selected="selected"' }} {% endif %}> {{ masstxt_none }} </option>
+    	  {% for tax_class in tax_classes %}
+    	  <option value="{{ tax_class['tax_class_id'] }}"{% if tax_class['tax_class_id']==tax_class_filter %} {{ ' selected="selected"' }} {% endif %}>{{ tax_class['title'] }}</option>
+    	  {% endfor %}
+    	  </select>
+    	  </td>
+    	</tr>
+    	
+    	
+    	
+    	<tr class="allfilters_row">
+    	  <td class="text-left">
+    	  <strong>{{ masstxt_quantity }}</strong>
+    	  </td>
+    	  <td class="text-left">
+    	  <label class="fil_label1">{{ masstxt_greater_than_or_equal }} </label>
+    	  <span class="fil_right_box1">
+    	    <input type="text" value="{{ stock_mmarese }}" name="stock_mmarese" class="fil_control1">
+    	  </span>
+    	  
+    	  <label class="fil_label1">{{ masstxt_less_than_or_equal }} </label>
+    	  <span class="fil_right_box1">
+    	    <input type="text" value="{{ stock_mmicse }}" name="stock_mmicse" class="fil_control1">
+    	  </span>
+    	  </td>
+    	</tr>
+
+
+
+    	<tr class="allfilters_row">
+    	  <td class="text-left">
+    	  <strong>{{ masstxt_minimum_quantity }}</strong>
+    	  </td>
+    	  <td class="text-left">
+    	  <label class="fil_label1">{{ masstxt_greater_than_or_equal }} </label>
+    	  <span class="fil_right_box1">
+    	    <input type="text" value="{{ min_q_mmarese }}" name="min_q_mmarese" class="fil_control1">
+    	  </span>
+
+    	  <label class="fil_label1">{{ masstxt_less_than_or_equal }} </label>
+    	  <span class="fil_right_box1">
+    	    <input type="text" value="{{ min_q_mmicse }}" name="min_q_mmicse" class="fil_control1">
+    	  </span>
+    	  </td>
+    	</tr>
+
+
+
+    	<tr class="allfilters_row">
+    	  <td class="text-left">
+    	  <strong>{{ masstxt_subtract_stock }}</strong>
+    	  </td>
+    	  <td class="text-left">
+    	  <select name="subtract_filter" class="fil_control4">
+    	  <option value="any"{% if subtract_filter=='any' %} {{ ' selected="selected"' }} {% endif %}>{{ masstxt_ignore_this }}</option>
+    	  <option value="1"{% if subtract_filter=='1' %} {{ ' selected="selected"' }} {% endif %}>{{ masstxt_yes }}</option>
+    	  <option value="0"{% if subtract_filter=='0' %} {{ ' selected="selected"' }} {% endif %}>{{ masstxt_no }}</option>
+    	  </select>
+    	  </td>
+    	</tr>
+
+    	<tr class="allfilters_row">
+    	  <td class="text-left">
+    	  <strong>{{ masstxt_out_of_stock_status }}</strong>
+    	  </td>
+    	  <td class="text-left">
+    	  <select name="stock_status_filter" class="fil_control4">
+    	  <option value="any"{% if stock_status_filter=='any' %} {{ ' selected="selected"' }} {% endif %}>{{ masstxt_ignore_this }}</option>
+    	  {% for stock_status in stock_statuses %}
+    	  <option value="{{ stock_status['stock_status_id'] }}"{% if stock_status['stock_status_id']==stock_status_filter %} {{ ' selected="selected"' }} {% endif %}>{{ stock_status['name'] }}</option>
+    	  {% endfor %}
+    	  </select>
+    	  </td>
+    	</tr>
+
+    	<tr class="allfilters_row">
+    	  <td class="text-left">
+    	  <strong>{{ masstxt_requires_shipping }}</strong>
+    	  </td>
+    	  <td class="text-left">
+    	  <select name="shipping_filter" class="fil_control4">
+    	  <option value="any"{% if shipping_filter=='any' %} {{ ' selected="selected"' }} {% endif %}>{{ masstxt_ignore_this }}</option>
+    	  <option value="1"{% if shipping_filter=='1' %} {{ ' selected="selected"' }} {% endif %}>{{ masstxt_yes }}</option>
+    	  <option value="0"{% if shipping_filter=='0' %} {{ ' selected="selected"' }} {% endif %}>{{ masstxt_no }}</option>
+    	  </select>
+    	  </td>
+    	</tr>
+
+
+
+    	<tr class="allfilters_row">
+    	  <td class="text-left">
+    	  <strong>{{ masstxt_date_available }}</strong>
+    	  </td>
+    	  <td class="text-left">
+    	  <label class="fil_label2">{{ masstxt_greater_than_or_equal }} </label>
+    	  <span class="fil_right_box2">
+    	    <input class="date fil_control2" type="text" value="{{ date_mmarese }}" name="date_mmarese" data-date-format="YYYY-MM-DD">
+    	  </span>
+
+    	  <label class="fil_label3">{{ masstxt_less_than_or_equal }} </label>
+    	  <span class="fil_right_box2">
+    	    <input class="date fil_control2" type="text" value="{{ date_mmicse }}" name="date_mmicse" data-date-format="YYYY-MM-DD">
+    	  </span>
+    	  </td>
+    	</tr>
+
+    	<tr class="allfilters_row">
+    	  <td class="text-left">
+    	  <strong>{{ masstxt_date_added }}</strong>
+    	  </td>
+    	  <td class="text-left">
+    	  <label class="fil_label2">{{ masstxt_greater_than_or_equal }} </label>
+    	  <span class="fil_right_box2">
+    	    <input class="datetime fil_control2" type="text" value="{{ date_added_mmarese }}" name="date_added_mmarese" data-date-format="YYYY-MM-DD HH:mm">
+    	  </span>
+
+    	  <label class="fil_label3">{{ masstxt_less_than_or_equal }} </label>
+    	  <span class="fil_right_box2">
+    	    <input class="datetime fil_control2" type="text" value="{{ date_added_mmicse }}" name="date_added_mmicse" data-date-format="YYYY-MM-DD HH:mm">
+    	  </span>
+    	  </td>
+    	</tr>
+
+    	<tr class="allfilters_row">
+    	  <td class="text-left">
+    	  <strong>{{ masstxt_date_modified }}</strong>
+    	  </td>
+    	  <td class="text-left">
+    	  <label class="fil_label2">{{ masstxt_greater_than_or_equal }} </label>
+    	  <span class="fil_right_box2">
+    	    <input class="datetime fil_control2" type="text" value="{{ date_modified_mmarese }}" name="date_modified_mmarese" data-date-format="YYYY-MM-DD HH:mm">
+    	  </span>
+
+    	  <label class="fil_label3">{{ masstxt_less_than_or_equal }} </label>
+    	  <span class="fil_right_box2">
+    	    <input class="datetime fil_control2" type="text" value="{{ date_modified_mmicse }}" name="date_modified_mmicse" data-date-format="YYYY-MM-DD HH:mm">
+    	  </span>
+    	  </td>
+    	</tr>
+
+
+
+
+    	<tr class="allfilters_row">
+    	  <td class="text-left">
+    	  <strong>{{ masstxt_status }}</strong>
+    	  </td>
+    	  <td class="text-left">
+    	  <select name="prod_status" class="fil_control4">
+    	  <option value="any"{% if prod_status=='any' %} {{ ' selected="selected"' }} {% endif %}>{{ masstxt_ignore_this }}</option>
+    	  <option value="1"{% if prod_status=='1' %} {{ ' selected="selected"' }} {% endif %}>{{ masstxt_enabled }}</option>
+    	  <option value="0"{% if prod_status=='0' %} {{ ' selected="selected"' }} {% endif %}>{{ masstxt_disabled }}</option>
+    	  </select>
+    	  </td>
+    	</tr>
+
+    	<tr class="allfilters_row">
+    	  <td class="text-left">
+    	  <strong>{{ masstxt_store }}</strong>
+    	  </td>
+    	  <td class="text-left">
+    	  <select name="store_filter" class="fil_control4">
+    	  <option value="any"{% if store_filter=='any' %} {{ ' selected="selected"' }} {% endif %}>{{ masstxt_ignore_this }}</option>
+    	  <option value="0"{% if store_filter=='0' %} {{ ' selected="selected"' }} {% endif %}>{{ masstxt_default }}</option>
+    	  {% for store in stores %}
+    	  <option value="{{ store['store_id'] }}"{% if store['store_id']==store_filter %} {{ ' selected="selected"' }} {% endif %}>{{ store['name'] }}</option>
+    	  {% endfor %}
+    	  </select>
+    	  </td>
+    	</tr>
+
+    	<tr class="allfilters_row">
+    	  <td class="text-left">
+    	  <strong>{{ masstxt_with_attribute }}</strong>
+    	  </td>
+    	  <td class="text-left">
+    	  <select name="filter_attr" class="fil_control4">
+    	  <option value="any"{% if filter_attr=='any' %} {{ ' selected="selected"' }} {% endif %}>{{ masstxt_ignore_this }}</option>
+    	  {% for attrib in all_attributes %}
+    	  <option value="{{ attrib['attribute_id'] }}"{% if attrib['attribute_id']==filter_attr %} {{ ' selected="selected"' }} {% endif %}>{{ attrib['attribute_group'] }} > {{ attrib['name'] }}</option>
+    	  {% endfor %}
+    	  </select>
+    	  </td>
+    	</tr>
+
+    	<tr class="allfilters_row">
+    	  <td class="text-left">
+    	  <strong>{{ masstxt_with_attribute_value }}</strong>
+    	  </td>
+    	  <td class="text-left">
+    	  <textarea name="filter_attr_val" rows="2" class="fil_control3">{{ filter_attr_val }}</textarea>
+    	  <label class="control-label"><span data-toggle="tooltip" title="{{ masstxt_with_attribute_value_help }}<br /><br />{{ masstxt_leave_empty_to_ignore }}"></span></label>
+    	  </td>
+    	</tr>
+
+    	<tr class="allfilters_row">
+    	  <td class="text-left">
+    	  <strong>{{ masstxt_with_this_option }}</strong>
+    	  </td>
+    	  <td class="text-left">
+    	  <select name="filter_opti" class="fil_control4">
+    	  <option value="any"{% if filter_opti=='any' %} {{ ' selected="selected"' }} {% endif %}>{{ masstxt_ignore_this }}</option>
+    	  {% for option in all_options %}
+    	  <option value="{{ option['option_id'] }}"{% if option['option_id']==filter_opti %} {{ ' selected="selected"' }} {% endif %}>{{ option['name'] }}</option>
+    	  {% endfor %}
+    	  </select>
+    	  </td>
+    	</tr>
+
+    	<tr class="allfilters_row">
+    	  <td class="text-left">
+    	  <strong>{{ masstxt_with_this_option_value }}</strong>
+    	  </td>
+    	  <td class="text-left">
+    	  <select name="filter_opti_val" class="fil_control4">
+    	  <option value="any"{% if filter_opti_val=='any' %} {{ ' selected="selected"' }} {% endif %}>{{ masstxt_ignore_this }}</option>
+    	  {% for optval in all_optval %}
+    	  <option value="{{ optval['option_value_id'] }}"{% if optval['option_value_id']==filter_opti_val %} {{ ' selected="selected"' }} {% endif %}>{{ optval['o_name'] }} > {{ optval['ov_name'] }}</option>
+    	  {% endfor %}
+    	  </select>
+    	  </td>
+    	</tr>
+
+    	</tbody>
+    	</table> <!-- filters table -->
+
+
+
+    	<table class="table table-bordered table-hover"> <!-- filter products table -->
+    	<tbody>
+    	
+    	<tr>
+    	  <td class="text-left coloana2">
+    	  <br />
+    	  {{ masstxt_max_prod_pag1 }}
+    	  <input size="3" type="text" value="{{ max_prod_pag }}" name="max_prod_pag"> 
+    	  <label class="control-label"><span data-toggle="tooltip" title="{{ masstxt_max_prod_pag2 }}"></span></label>
+    	  <br />
+    	  {{ masstxt_show_page_of1 }}
+    	  <select name="curent_pag" onchange="document.getElementById('fil_prod_btn').click()">
+    	    {% for pg in 1..total_pag %}
+    	      <option value="{{ pg }}"{% if pg==curent_pag %} {{ ' selected="selected"' }} {% endif %}>{{ pg }}</option>
+    	    {% endfor %}
+    	  </select>
+    	  {{ masstxt_show_page_of2 }}{{ total_pag }}<br /><br />
+    	  <input type="submit" value="{{ masstxt_filter_products_button }}" id="fil_prod_btn" name="lista_prod" class="btn btn-primary fil_prod_butt">
+    	  <br /><br />
+    	  {{ total_prod_filtered }}{{ masstxt_total_prod_res }}<br /><br />
+    	  <span class="counter" style="font-weight:bold;">0</span>{{ masstxt_prod_sel_for_upd }}<br />
+    	  <br />
+    	  </td>
+    	  <td class="text-left">
+    	  <div class="filterd_p_list filteredp_div">
+    	  <table class="list1"> <!-- products filtered table -->
+          <thead>
+            <tr>
+              <td class="filtered_table_td1" width="1">
+              <input type="checkbox" onclick="$('input[name*=\'selected\']').prop('checked', this.checked);" checked="checked" name="sel_desel_all" />
+              </td>
+              <td class="filtered_table_td1">{{ masstxt_table_name }}</td>
+              <td class="filtered_table_td1">{{ masstxt_table_model }}</td>
+              <td class="filtered_table_td1 t_a_right">{{ masstxt_table_price }}</td>
+              <td class="filtered_table_td1 t_a_right">{{ masstxt_table_quantity }}</td>
+              <td class="filtered_table_td1">{{ masstxt_table_status }}</td>
+            </tr>
+          </thead>
+          <tbody class="products_to_upd">
+          {% if arr_lista_prod %}
+            {% for product in arr_lista_prod %}
+            <tr>
+              <td class="filtered_table_td2"><input type="checkbox" name="selected[]" value="{{ product['product_id'] }}" checked="checked" /></td>
+              <td class="filtered_table_td2">{{ product['name'] }}</td>
+              <td class="filtered_table_td2">{{ product['model'] }}</td>
+              <td class="filtered_table_td2 t_a_right">{{ product['price'] }}</td>
+              <td class="filtered_table_td2 t_a_right">
+                {% if product['quantity'] <= 0 %}
+                <span style="color: #FF0000;">{{ product['quantity'] }}</span>
+                {% elseif product['quantity'] <= 5 %}
+                <span style="color: #FFA500;">{{ product['quantity'] }}</span>
+                {% else %}
+                <span style="color: #008000;">{{ product['quantity'] }}</span>
+                {% endif %}</td>
+              <td class="filtered_table_td2">
+                {% if product['status']==1 %}
+                <span style="color: #008000;">{{ masstxt_enabled }}</span>
+                {% else %}
+                <span style="color: #FF0000;">{{ masstxt_disabled }}</span>
+                {% endif %}</td>
+            </tr>
+            {% endfor %}
+            {% else %}
+            <tr>
+              <td class="text-center" colspan="6"> </td>
+            </tr>
+          {% endif %}
+          </tbody>
+          </table> <!-- products filtered table -->
+    	  </div>
+            <a id="filteredp_more" class="more_less m_l_f_p">{{ masstxt_show_more_r }} <i class="fa fa-chevron-down"></i></a> 
+            <a id="filteredp_less" class="more_less m_l_f_p">{{ masstxt_show_less_r }} <i class="fa fa-chevron-up"></i></a>    	  
+    	  </td>
+    	</tr>
+
+        </tbody>
+        </table> <!-- filter products table -->
+      </div>
+      </div>
+    
+    </div> <!-- filters div -->
+    <!-- /* ///////////////// PANA AICI CODUL ESTE LA FEL PT TOATE MASS... ///////////////// */ -->
+    
+    
+    
+    
+    
+    
+    
+    <div class="panel panel-default"> <!-- updates div -->
+      <div class="panel-heading">
+        <h3 class="panel-title"><i class="fa fa-pencil"></i> {{ masstxt_p_options_updates }}</h3>
+      </div>
+      
+      <div class="panel-body">
+      <div class="table-responsive">
+    	<table class="table table-bordered table-hover"> <!-- updates table 1 -->
+    	<tbody>
+    	
+    	<tr>
+    	  <td style="padding:7px;">
+    	  <div class="for_autocomplete">{{ masstxt_load_existing_options }}</div>
+    	  <div class="for_autocomplete">{{ masstxt_name_autocomplete }} <input type="text" name="filter_namex" value="{{ filter_namex }}" size="16" /></div>
+    	  <div class="for_autocomplete">{{ masstxt_model_autocomplete }} <input type="text" name="filter_modelx" value="{{ filter_modelx }}" size="16" /></div>
+    	  <input type="hidden" name="product_id_to_options" value="{{ product_id_to_options }}" />
+    	  <input type="submit" value="load_product_options" name="load_product_options" style="display:none;" />
+    	  </td>
+    	</tr>
+    	
+    	</tbody>
+    	</table>
+    	
+    	<table class="table table-bordered table-hover"> <!-- updates table 2 -->
+    	<tbody>
+    	
+     	<tr>
+    	  <td class="tableh1" style="padding:7px;">
+    	  <strong>{{ masstxt_new_options }}</strong>
+    	  </td>
+    	</tr>
+
+    	<tr>
+    	  <td class="text-left">
+            <div class="tab-pane" id="tab-option">
+              <div class="row">
+                <div class="col-sm-2">
+                  <ul class="nav nav-pills nav-stacked" id="option">
+                    {% set option_row = 0 %}
+                    {% for product_option in product_options %}
+                    <li><a href="#tab-option{{ option_row }}" data-toggle="tab"><i class="fa fa-minus-circle" onclick="$('a[href=\'#tab-option{{ option_row }}\']').parent().remove(); $('#tab-option{{ option_row }}').remove(); $('#option a:first').tab('show');"></i> {{ product_option['name'] }}</a></li>
+                    {% set option_row = option_row + 1 %}
+                    {% endfor %}
+                    <li>
+                      <input type="text" name="option" value="" placeholder="{{ entry_option }}" id="input-option" class="form-control" />
+                    </li>
+                  </ul>
+                </div>
+                <div class="col-sm-10">
+                  <div class="tab-content">
+                    {% set option_row = 0 %}
+                    {% set option_value_row = 0 %}
+                    {% for product_option in product_options %}
+                    <div class="tab-pane" id="tab-option{{ option_row }}">
+                      <input type="hidden" name="product_option[{{ option_row }}][product_option_id]" value="{{ product_option['product_option_id'] }}" />
+                      <input type="hidden" name="product_option[{{ option_row }}][name]" value="{{ product_option['name'] }}" />
+                      <input type="hidden" name="product_option[{{ option_row }}][option_id]" value="{{ product_option['option_id'] }}" />
+                      <input type="hidden" name="product_option[{{ option_row }}][type]" value="{{ product_option['type'] }}" />
+                      <div class="form-group">
+                        <label class="col-sm-2 control-label" for="input-required{{ option_row }}">{{ entry_required }}</label>
+                        <div class="col-sm-10">
+                          <select name="product_option[{{ option_row }}][required]" id="input-required{{ option_row }}" class="form-control">
+                            {% if product_option['required'] %}
+                            <option value="1" selected="selected">{{ text_yes }}</option>
+                            <option value="0">{{ text_no }}</option>
+                            {% else %}
+                            <option value="1">{{ text_yes }}</option>
+                            <option value="0" selected="selected">{{ text_no }}</option>
+                            {% endif %}
+                          </select>
+                        </div>
+                      </div>
+                      {% if product_option['type'] == 'text' %}
+                      <div class="form-group">
+                        <label class="col-sm-2 control-label" for="input-value{{ option_row }}">{{ entry_option_value }}</label>
+                        <div class="col-sm-10">
+                          <input type="text" name="product_option[{{ option_row }}][value]" value="{{ product_option['value'] }}" placeholder="{{ entry_option_value }}" id="input-value{{ option_row }}" class="form-control" />
+                        </div>
+                      </div>
+                      {% endif %}
+                      {% if product_option['type'] == 'textarea' %}
+                      <div class="form-group">
+                        <label class="col-sm-2 control-label" for="input-value{{ option_row }}">{{ entry_option_value }}</label>
+                        <div class="col-sm-10">
+                          <textarea name="product_option[{{ option_row }}][value]" rows="5" placeholder="{{ entry_option_value }}" id="input-value{{ option_row }}" class="form-control">{{ product_option['value'] }}</textarea>
+                        </div>
+                      </div>
+                      {% endif %}
+                      {% if product_option['type'] == 'file' %}
+                      <div class="form-group" style="display: none;">
+                        <label class="col-sm-2 control-label" for="input-value{{ option_row }}">{{ entry_option_value }}</label>
+                        <div class="col-sm-10">
+                          <input type="text" name="product_option[{{ option_row }}][value]" value="{{ product_option['value'] }}" placeholder="{{ entry_option_value }}" id="input-value{{ option_row }}" class="form-control" />
+                        </div>
+                      </div>
+                      {% endif %}
+                      {% if product_option['type'] == 'date' %}
+                      <div class="form-group">
+                        <label class="col-sm-2 control-label" for="input-value{{ option_row }}">{{ entry_option_value }}</label>
+                        <div class="col-sm-3">
+                          <div class="input-group date">
+                            <input type="text" name="product_option[{{ option_row }}][value]" value="{{ product_option['value'] }}" placeholder="{{ entry_option_value }}" data-date-format="YYYY-MM-DD" id="input-value{{ option_row }}" class="form-control" />
+                            <span class="input-group-btn">
+                            <button class="btn btn-default" type="button"><i class="fa fa-calendar"></i></button>
+                            </span></div>
+                        </div>
+                      </div>
+                      {% endif %}
+                      {% if product_option['type'] == 'time' %}
+                      <div class="form-group">
+                        <label class="col-sm-2 control-label" for="input-value{{ option_row }}">{{ entry_option_value }}</label>
+                        <div class="col-sm-10">
+                          <div class="input-group time">
+                            <input type="text" name="product_option[{{ option_row }}][value]" value="{{ product_option['value'] }}" placeholder="{{ entry_option_value }}" data-date-format="HH:mm" id="input-value{{ option_row }}" class="form-control" />
+                            <span class="input-group-btn">
+                            <button type="button" class="btn btn-default"><i class="fa fa-calendar"></i></button>
+                            </span></div>
+                        </div>
+                      </div>
+                      {% endif %}
+                      {% if product_option['type'] == 'datetime' %}
+                      <div class="form-group">
+                        <label class="col-sm-2 control-label" for="input-value{{ option_row }}">{{ entry_option_value }}</label>
+                        <div class="col-sm-10">
+                          <div class="input-group datetime">
+                            <input type="text" name="product_option[{{ option_row }}][value]" value="{{ product_option['value'] }}" placeholder="{{ entry_option_value }}" data-date-format="YYYY-MM-DD HH:mm" id="input-value{{ option_row }}" class="form-control" />
+                            <span class="input-group-btn">
+                            <button type="button" class="btn btn-default"><i class="fa fa-calendar"></i></button>
+                            </span></div>
+                        </div>
+                      </div>
+                      {% endif %}
+                      {% if product_option['type'] == 'select' or product_option['type'] == 'radio' or product_option['type'] == 'checkbox' or product_option['type'] == 'image' %}
+                      <div class="table-responsive">
+                        <table id="option-value{{ option_row }}" class="table table-striped table-bordered table-hover">
+                          <thead>
+                            <tr>
+                              <td class="text-left">{{ entry_option_value }}</td>
+                              <td class="text-right">{{ entry_quantity }}</td>
+                              <td class="text-left">{{ entry_subtract }}</td>
+                              <td class="text-right">{{ entry_price }}</td>
+                              <td class="text-right">{{ entry_option_points }}</td>
+                              <td class="text-right">{{ entry_weight }}</td>
+                              <td></td>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {% for product_option_value in product_option['product_option_value'] %}
+                            <tr id="option-value-row{{ option_value_row }}">
+                              <td class="text-left"><select name="product_option[{{ option_row }}][product_option_value][{{ option_value_row }}][option_value_id]" class="form-control">
+                                  {% if option_values[product_option['option_id']] is defined %}
+                                  {% for option_value in option_values[product_option['option_id']] %}
+                                  {% if option_value['option_value_id'] == product_option_value['option_value_id'] %}
+                                  <option value="{{ option_value['option_value_id'] }}" selected="selected">{{ option_value['name'] }}</option>
+                                  {% else %}
+                                  <option value="{{ option_value['option_value_id'] }}">{{ option_value['name'] }}</option>
+                                  {% endif %}
+                                  {% endfor %}
+                                  {% endif %}
+                                </select>
+                                <input type="hidden" name="product_option[{{ option_row }}][product_option_value][{{ option_value_row }}][product_option_value_id]" value="{{ product_option_value['product_option_value_id'] }}" /></td>
+                              <td class="text-right"><input type="text" name="product_option[{{ option_row }}][product_option_value][{{ option_value_row }}][quantity]" value="{{ product_option_value['quantity'] }}" placeholder="{{ entry_quantity }}" class="form-control" /></td>
+                              <td class="text-left"><select name="product_option[{{ option_row }}][product_option_value][{{ option_value_row }}][subtract]" class="form-control">
+                                  {% if product_option_value['subtract'] %}
+                                  <option value="1" selected="selected">{{ text_yes }}</option>
+                                  <option value="0">{{ text_no }}</option>
+                                  {% else %}
+                                  <option value="1">{{ text_yes }}</option>
+                                  <option value="0" selected="selected">{{ text_no }}</option>
+                                  {% endif %}
+                                </select></td>
+                              <td class="text-right"><select name="product_option[{{ option_row }}][product_option_value][{{ option_value_row }}][price_prefix]" class="form-control">
+                                  {% if product_option_value['price_prefix'] == '+' %}
+                                  <option value="+" selected="selected">+</option>
+                                  {% else %}
+                                  <option value="+">+</option>
+                                  {% endif %}
+                                  {% if product_option_value['price_prefix'] == '-' %}
+                                  <option value="-" selected="selected">-</option>
+                                  {% else %}
+                                  <option value="-">-</option>
+                                  {% endif %}
+                                </select>
+                                <input type="text" name="product_option[{{ option_row }}][product_option_value][{{ option_value_row }}][price]" value="{{ product_option_value['price'] }}" placeholder="{{ entry_price }}" class="form-control" /></td>
+                              <td class="text-right"><select name="product_option[{{ option_row }}][product_option_value][{{ option_value_row }}][points_prefix]" class="form-control">
+                                  {% if product_option_value['points_prefix'] == '+' %}
+                                  <option value="+" selected="selected">+</option>
+                                  {% else %}
+                                  <option value="+">+</option>
+                                  {% endif %}
+                                  {% if product_option_value['points_prefix'] == '-' %}
+                                  <option value="-" selected="selected">-</option>
+                                  {% else %}
+                                  <option value="-">-</option>
+                                  {% endif %}
+                                </select>
+                                <input type="text" name="product_option[{{ option_row }}][product_option_value][{{ option_value_row }}][points]" value="{{ product_option_value['points'] }}" placeholder="{{ entry_points }}" class="form-control" /></td>
+                              <td class="text-right"><select name="product_option[{{ option_row }}][product_option_value][{{ option_value_row }}][weight_prefix]" class="form-control">
+                                  {% if product_option_value['weight_prefix'] == '+' %}
+                                  <option value="+" selected="selected">+</option>
+                                  {% else %}
+                                  <option value="+">+</option>
+                                  {% endif %}
+                                  {% if product_option_value['weight_prefix'] == '-' %}
+                                  <option value="-" selected="selected">-</option>
+                                  {% else %}
+                                  <option value="-">-</option>
+                                  {% endif %}
+                                </select>
+                                <input type="text" name="product_option[{{ option_row }}][product_option_value][{{ option_value_row }}][weight]" value="{{ product_option_value['weight'] }}" placeholder="{{ entry_weight }}" class="form-control" /></td>
+                              <td class="text-left"><button type="button" onclick="$(this).tooltip('destroy');$('#option-value-row{{ option_value_row }}').remove();" data-toggle="tooltip" title="{{ button_remove }}" class="btn btn-danger"><i class="fa fa-minus-circle"></i></button></td>
+                            </tr>
+                            {% set option_value_row = option_value_row + 1 %}
+                            {% endfor %}
+                          </tbody>
+                          <tfoot>
+                            <tr>
+                              <td colspan="6"></td>
+                              <td class="text-left"><button type="button" onclick="addOptionValue('{{ option_row }}');" data-toggle="tooltip" title="{{ button_option_value_add }}" class="btn btn-primary"><i class="fa fa-plus-circle"></i></button></td>
+                            </tr>
+                          </tfoot>
+                        </table>
+                      </div>
+                      <select id="option-values{{ option_row }}" style="display: none;">
+                        {% if option_values[product_option['option_id']] is defined %}
+                        {% for option_value in option_values[product_option['option_id']] %}
+                        <option value="{{ option_value['option_value_id'] }}">{{ option_value['name'] }}</option>
+                        {% endfor %}
+                        {% endif %}
+                      </select>
+                      {% endif %}
+                    </div>
+                    {% set option_row = option_row + 1 %}
+                    {% endfor %}
+                  </div>
+                </div>
+              </div>
+            </div>
+    	  </td>
+    	</tr>
+
+    	</tbody>
+    	</table>
+    	
+    	<table class="table table-bordered table-hover"> <!-- updates table 3 -->
+    	<tbody>
+
+    	<tr>
+    	  <td class="text-left tableh1">
+    	  {{ masstxt_options_update_mode }}
+    	</tr>
+
+    	<tr>
+    	  <td class="text-left radio1">
+    	  <input type="radio"{% if opt_upd_mode=='o_upd_add' %} {{ ' checked="checked"' }} {% endif %} value="o_upd_add" name="opt_upd_mode" id="o_upd_add">
+    	  <label for="o_upd_add"> {{ masstxt_upd_mode_o_upd_add }}</label>
+    	  <br />
+    	  <input type="radio"{% if opt_upd_mode=='o_upd' %} {{ ' checked="checked"' }} {% endif %} value="o_upd" name="opt_upd_mode" id="o_upd">
+    	  <label for="o_upd"> {{ masstxt_upd_mode_o_upd }}</label>
+    	  <br />
+    	  <input type="radio"{% if opt_upd_mode=='o_add' %} {{ ' checked="checked"' }} {% endif %} value="o_add" name="opt_upd_mode" id="o_add">
+    	  <label for="o_add"> {{ masstxt_upd_mode_o_add }}</label>
+    	  <br />
+    	  <input type="radio"{% if opt_upd_mode=='o_del_add' %} {{ ' checked="checked"' }} {% endif %} value="o_del_add" name="opt_upd_mode" id="o_del_add">
+    	  <label for="o_del_add"> {{ masstxt_upd_mode_o_del_add }}</label>
+    	  <br />
+    	  <input type="radio"{% if opt_upd_mode=='o_del_opt_and_val' %} {{ ' checked="checked"' }} {% endif %} value="o_del_opt_and_val" name="opt_upd_mode" id="o_del_opt_and_val">
+    	  <label for="o_del_opt_and_val"> {{ masstxt_upd_mode_o_del_opt_and_val }}</label>
+    	  <br />
+    	  <input type="radio"{% if opt_upd_mode=='o_del_val' %} {{ ' checked="checked"' }} {% endif %} value="o_del_val" name="opt_upd_mode" id="o_del_val">
+    	  <label for="o_del_val"> {{ masstxt_upd_mode_o_del_val }}</label>
+    	  <br />
+    	  <input type="radio"{% if opt_upd_mode=='o_del' %} {{ ' checked="checked"' }} {% endif %} value="o_del" name="opt_upd_mode" id="o_del">
+    	  <label for="o_del"> {{ masstxt_upd_mode_o_del }}</label>
+    	  <span style="color:#666666;font-size:11px;">&nbsp; {{ masstxt_upd_mode_o_del_help }}</span>
+    	  </td>
+    	</tr>
+
+    	</tbody>
+    	</table>
+    	
+    	<table class="table table-bordered table-hover"> <!-- updates table 4 -->
+    	<tbody>
+
+    	<tr>
+    	  <td class="text-left tableh1">
+    	  {{ masstxt_options_values_update_mode }}
+    	</tr>
+    	
+    	<tr>
+    	  <td class="text-left radio1">
+    	  <input type="radio"{% if val_upd_mode=='v_rep_add' %} {{ ' checked="checked"' }} {% endif %} value="v_rep_add" name="val_upd_mode" id="v_rep_add">
+    	  <label for="v_rep_add"> {{ masstxt_upd_mode_v_rep_add }}</label>
+    	  <br />
+    	  <input type="radio"{% if val_upd_mode=='v_rep' %} {{ ' checked="checked"' }} {% endif %} value="v_rep" name="val_upd_mode" id="v_rep">
+    	  <label for="v_rep"> {{ masstxt_upd_mode_v_rep }}</label>
+    	  <br />
+    	  </td>
+    	</tr>
+
+    	</tbody>
+    	</table>
+    	
+    	<table class="table table-bordered table-hover"> <!-- updates table 5 -->
+    	<tbody>
+
+    	<tr>
+    	  <td class="text-left">
+    	  
+    	  <table class="table_val_upd_m1">
+    	  <tbody>
+    	  
+    	  <tr>
+    	  <td>{{ masstxt_options_quantity_update_mode }}</td>
+    	  <td><select name="qty_upd_mode" style="width:417px;">
+    	  <option value="re"{% if qty_upd_mode=='re' %} {{ ' selected="selected"' }} {% endif %}>{{ masstxt_replacement }}</option>
+    	  <option value="mu"{% if qty_upd_mode=='mu' %} {{ ' selected="selected"' }} {% endif %}>{{ masstxt_multiplication }}</option>
+    	  <option value="ad"{% if qty_upd_mode=='ad' %} {{ ' selected="selected"' }} {% endif %}>{{ masstxt_addition }}</option>
+    	  <option value="su"{% if qty_upd_mode=='su' %} {{ ' selected="selected"' }} {% endif %}>{{ masstxt_subtraction }}</option>
+    	  <option value="no"{% if qty_upd_mode=='no' %} {{ ' selected="selected"' }} {% endif %}>{{ masstxt_no_update }}</option>
+    	  </select><label class="control-label"><span data-toggle="tooltip" title="{{ masstxt_example1 }}"></span></label></td>
+    	  </tr>
+    	  
+    	  <tr>
+    	  <td>{{ masstxt_options_price_update_mode }}</td>
+    	  <td><select name="price_upd_mode" style="width:417px;">
+    	  <option value="re"{% if price_upd_mode=='re' %} {{ ' selected="selected"' }} {% endif %}>{{ masstxt_replacement }}</option>
+    	  <option value="mu"{% if price_upd_mode=='mu' %} {{ ' selected="selected"' }} {% endif %}>{{ masstxt_multiplication }}</option>
+    	  <option value="ad"{% if price_upd_mode=='ad' %} {{ ' selected="selected"' }} {% endif %}>{{ masstxt_addition }}</option>
+    	  <option value="su"{% if price_upd_mode=='su' %} {{ ' selected="selected"' }} {% endif %}>{{ masstxt_subtraction }}</option>
+    	  <option value="re2"{% if price_upd_mode=='re2' %} {{ ' selected="selected"' }} {% endif %}>{{ masstxt_replacement_percent_bprice }}</option>
+    	  <option value="no"{% if price_upd_mode=='no' %} {{ ' selected="selected"' }} {% endif %}>{{ masstxt_no_update }}</option>
+    	  </select><label class="control-label"><span data-toggle="tooltip" title="{{ masstxt_example2 }}"></span></label></td>
+    	  </tr>
+    	  
+    	  <tr>
+    	  <td>{{ masstxt_options_points_update_mode }}</td>
+    	  <td><select name="points_upd_mode" style="width:417px;">
+    	  <option value="re"{% if points_upd_mode=='re' %} {{ ' selected="selected"' }} {% endif %}>{{ masstxt_replacement }}</option>
+    	  <option value="mu"{% if points_upd_mode=='mu' %} {{ ' selected="selected"' }} {% endif %}>{{ masstxt_multiplication }}</option>
+    	  <option value="ad"{% if points_upd_mode=='ad' %} {{ ' selected="selected"' }} {% endif %}>{{ masstxt_addition }}</option>
+    	  <option value="su"{% if points_upd_mode=='su' %} {{ ' selected="selected"' }} {% endif %}>{{ masstxt_subtraction }}</option>
+    	  <option value="re2"{% if points_upd_mode=='re2' %} {{ ' selected="selected"' }} {% endif %}>{{ masstxt_replacement_percent_points }}</option>
+    	  <option value="no"{% if points_upd_mode=='no' %} {{ ' selected="selected"' }} {% endif %}>{{ masstxt_no_update }}</option>
+    	  </select><label class="control-label"><span data-toggle="tooltip" title="{{ masstxt_example3 }}"></span></label></td>
+    	  </tr>
+    	  
+    	  <tr>
+    	  <td>{{ masstxt_options_wgt_update_mode }}</td>
+    	  <td><select name="wgt_upd_mode" style="width:417px;">
+    	  <option value="re"{% if wgt_upd_mode=='re' %} {{ ' selected="selected"' }} {% endif %}>{{ masstxt_replacement }}</option>
+    	  <option value="mu"{% if wgt_upd_mode=='mu' %} {{ ' selected="selected"' }} {% endif %}>{{ masstxt_multiplication }}</option>
+    	  <option value="ad"{% if wgt_upd_mode=='ad' %} {{ ' selected="selected"' }} {% endif %}>{{ masstxt_addition }}</option>
+    	  <option value="su"{% if wgt_upd_mode=='su' %} {{ ' selected="selected"' }} {% endif %}>{{ masstxt_subtraction }}</option>
+    	  <option value="re2"{% if wgt_upd_mode=='re2' %} {{ ' selected="selected"' }} {% endif %}>{{ masstxt_replacement_percent_weight }}</option>
+    	  <option value="no"{% if wgt_upd_mode=='no' %} {{ ' selected="selected"' }} {% endif %}>{{ masstxt_no_update }}</option>
+    	  </select><label class="control-label"><span data-toggle="tooltip" title="{{ masstxt_example4 }}"></span></label></td>
+    	  </tr>
+    	  
+    	  </tbody>
+    	  </table>
+    	  </td>
+    	</tr>
+
+    	</tbody>
+    	</table>
+    	
+    	<table class="table table-bordered table-hover"> <!-- updates table 6 -->
+    	<tbody>
+
+    	<tr>
+    	  <td colspan="2" class="text-center" style="color:#f24545;">
+    	  <span class="counter" style="font-weight:bold;">0</span>
+    	  {{ masstxt_mass_update_button_top1 }}
+    	  {{ curent_pag }}
+    	  {{ masstxt_mass_update_button_top2 }}
+    	  {{ total_pag }}
+    	  {{ masstxt_mass_update_button_top3 }}
+    	  <label class="control-label"><span data-toggle="tooltip" title="{{ masstxt_mass_update_button_help }}"></span></label>
+    	  <br />
+    	  <input type="submit" value="{{ masstxt_mass_update_button }}" name="mass_update"  class="btn btn-danger" style="width:222px; font-weight:bold;">
+    	  <br />
+    	  </td>
+    	</tr>
+
+    	</tbody>
+    	</table>
+      </div>
+      </div>
+
+    </div> <!-- updates div -->
+    
+    <div class="oc-mrk-com">
+    Visit <a href="http://opencart-market.com" target="_blank">www.opencart-market.com</a> for more informations and for more useful extensions.
+    </div>    
+    
+    </form>
+    
+  </div> <!-- continut -->
+
+  
+
+  <script type="text/javascript"><!--	
+var option_row = {{ option_row }};
+
+$('input[name=\'option\']').autocomplete({
+	'source': function(request, response) {
+		$.ajax({
+			url: 'index.php?route=catalog/option/autocomplete&user_token={{ user_token }}&filter_name=' +  encodeURIComponent(request),
+			dataType: 'json',			
+			success: function(json) {
+				response($.map(json, function(item) {
+					return {
+						category: item['category'],
+						label: item['name'],
+						value: item['option_id'],
+						type: item['type'],
+						option_value: item['option_value']
+					}
+				}));
+			}
+		});
+	},
+	'select': function(item) {
+		html  = '<div class="tab-pane" id="tab-option' + option_row + '">';
+		html += '	<input type="hidden" name="product_option[' + option_row + '][product_option_id]" value="" />';
+		html += '	<input type="hidden" name="product_option[' + option_row + '][name]" value="' + item['label'] + '" />';
+		html += '	<input type="hidden" name="product_option[' + option_row + '][option_id]" value="' + item['value'] + '" />';
+		html += '	<input type="hidden" name="product_option[' + option_row + '][type]" value="' + item['type'] + '" />';
+		
+		html += '	<div class="form-group">';
+		html += '	  <label class="col-sm-2 control-label" for="input-required' + option_row + '">{{ entry_required }}</label>';
+		html += '	  <div class="col-sm-10"><select name="product_option[' + option_row + '][required]" id="input-required' + option_row + '" class="form-control">';
+		html += '	      <option value="1">{{ text_yes }}</option>';
+		html += '	      <option value="0">{{ text_no }}</option>';
+		html += '	  </select></div>';
+		html += '	</div>';
+		
+		if (item['type'] == 'text') {
+			html += '	<div class="form-group">';
+			html += '	  <label class="col-sm-2 control-label" for="input-value' + option_row + '">{{ entry_option_value }}</label>';
+			html += '	  <div class="col-sm-10"><input type="text" name="product_option[' + option_row + '][value]" value="" placeholder="{{ entry_option_value }}" id="input-value' + option_row + '" class="form-control" /></div>';
+			html += '	</div>';
+		}
+		
+		if (item['type'] == 'textarea') {
+			html += '	<div class="form-group">';
+			html += '	  <label class="col-sm-2 control-label" for="input-value' + option_row + '">{{ entry_option_value }}</label>';
+			html += '	  <div class="col-sm-10"><textarea name="product_option[' + option_row + '][value]" rows="5" placeholder="{{ entry_option_value }}" id="input-value' + option_row + '" class="form-control"></textarea></div>';
+			html += '	</div>';			
+		}
+		 
+		if (item['type'] == 'file') {
+			html += '	<div class="form-group" style="display: none;">';
+			html += '	  <label class="col-sm-2 control-label" for="input-value' + option_row + '">{{ entry_option_value }}</label>';
+			html += '	  <div class="col-sm-10"><input type="text" name="product_option[' + option_row + '][value]" value="" placeholder="{{ entry_option_value }}" id="input-value' + option_row + '" class="form-control" /></div>';
+			html += '	</div>';
+		}
+						
+		if (item['type'] == 'date') {
+			html += '	<div class="form-group">';
+			html += '	  <label class="col-sm-2 control-label" for="input-value' + option_row + '">{{ entry_option_value }}</label>';
+			html += '	  <div class="col-sm-3"><div class="input-group date"><input type="text" name="product_option[' + option_row + '][value]" value="" placeholder="{{ entry_option_value }}" data-date-format="YYYY-MM-DD" id="input-value' + option_row + '" class="form-control" /><span class="input-group-btn"><button type="button" class="btn btn-default"><i class="fa fa-calendar"></i></button></span></div></div>';
+			html += '	</div>';
+		}
+		
+		if (item['type'] == 'time') {
+			html += '	<div class="form-group">';
+			html += '	  <label class="col-sm-2 control-label" for="input-value' + option_row + '">{{ entry_option_value }}</label>';
+			html += '	  <div class="col-sm-10"><div class="input-group time"><input type="text" name="product_option[' + option_row + '][value]" value="" placeholder="{{ entry_option_value }}" data-date-format="HH:mm" id="input-value' + option_row + '" class="form-control" /><span class="input-group-btn"><button type="button" class="btn btn-default"><i class="fa fa-calendar"></i></button></span></div></div>';
+			html += '	</div>';
+		}
+				
+		if (item['type'] == 'datetime') {
+			html += '	<div class="form-group">';
+			html += '	  <label class="col-sm-2 control-label" for="input-value' + option_row + '">{{ entry_option_value }}</label>';
+			html += '	  <div class="col-sm-10"><div class="input-group datetime"><input type="text" name="product_option[' + option_row + '][value]" value="" placeholder="{{ entry_option_value }}" data-date-format="YYYY-MM-DD HH:mm" id="input-value' + option_row + '" class="form-control" /><span class="input-group-btn"><button type="button" class="btn btn-default"><i class="fa fa-calendar"></i></button></span></div></div>';
+			html += '	</div>';
+		}
+			
+		if (item['type'] == 'select' || item['type'] == 'radio' || item['type'] == 'checkbox' || item['type'] == 'image') {
+			html += '<div class="table-responsive">';
+			html += '  <table id="option-value' + option_row + '" class="table table-striped table-bordered table-hover">';
+			html += '  	 <thead>'; 
+			html += '      <tr>';
+			html += '        <td class="text-left">{{ entry_option_value }}</td>';
+			html += '        <td class="text-right">{{ entry_quantity }}</td>';
+			html += '        <td class="text-left">{{ entry_subtract }}</td>';
+			html += '        <td class="text-right">{{ entry_price }}</td>';
+			html += '        <td class="text-right">{{ entry_option_points }}</td>';
+			html += '        <td class="text-right">{{ entry_weight }}</td>';
+			html += '        <td></td>';
+			html += '      </tr>';
+			html += '  	 </thead>';
+			html += '  	 <tbody>';
+			html += '    </tbody>';
+			html += '    <tfoot>';
+			html += '      <tr>';
+			html += '        <td colspan="6"></td>';
+			html += '        <td class="text-left"><button type="button" onclick="addOptionValue(' + option_row + ');" data-toggle="tooltip" title="{{ button_option_value_add }}" class="btn btn-primary"><i class="fa fa-plus-circle"></i></button></td>';
+			html += '      </tr>';
+			html += '    </tfoot>';
+			html += '  </table>';
+			html += '</div>';
+			
+            html += '  <select id="option-values' + option_row + '" style="display: none;">';
+			
+            for (i = 0; i < item['option_value'].length; i++) {
+				html += '  <option value="' + item['option_value'][i]['option_value_id'] + '">' + item['option_value'][i]['name'] + '</option>';
+            }
+
+            html += '  </select>';	
+			html += '</div>';	
+		}
+		
+		$('#tab-option .tab-content').append(html);
+			
+		$('#option > li:last-child').before('<li><a href="#tab-option' + option_row + '" data-toggle="tab"><i class="fa fa-minus-circle" onclick="$(\'a[href=\\\'#tab-option' + option_row + '\\\']\').parent().remove(); $(\'#tab-option' + option_row + '\').remove(); $(\'#option a:first\').tab(\'show\')"></i> ' + item['label'] + '</li>');
+		
+		$('#option a[href=\'#tab-option' + option_row + '\']').tab('show');
+		
+		$('.date').datetimepicker({
+			pickTime: false
+		});
+		
+		$('.time').datetimepicker({
+			pickDate: false
+		});
+		
+		$('.datetime').datetimepicker({
+			pickDate: true,
+			pickTime: true
+		});
+				
+		option_row++;
+	}	
+});
+//--></script> 
+  <script type="text/javascript"><!--		
+var option_value_row = {{ option_value_row }};
+
+function addOptionValue(option_row) {	
+	html  = '<tr id="option-value-row' + option_value_row + '">';
+	html += '  <td class="text-left"><select name="product_option[' + option_row + '][product_option_value][' + option_value_row + '][option_value_id]" class="form-control">';
+	html += $('#option-values' + option_row).html();
+	html += '  </select><input type="hidden" name="product_option[' + option_row + '][product_option_value][' + option_value_row + '][product_option_value_id]" value="" /></td>';
+	html += '  <td class="text-right"><input type="text" name="product_option[' + option_row + '][product_option_value][' + option_value_row + '][quantity]" value="" placeholder="{{ entry_quantity }}" class="form-control" /></td>'; 
+	html += '  <td class="text-left"><select name="product_option[' + option_row + '][product_option_value][' + option_value_row + '][subtract]" class="form-control">';
+	html += '    <option value="1">{{ text_yes }}</option>';
+	html += '    <option value="0">{{ text_no }}</option>';
+	html += '  </select></td>';
+	html += '  <td class="text-right"><select name="product_option[' + option_row + '][product_option_value][' + option_value_row + '][price_prefix]" class="form-control">';
+	html += '    <option value="+">+</option>';
+	html += '    <option value="-">-</option>';
+	html += '  </select>';
+	html += '  <input type="text" name="product_option[' + option_row + '][product_option_value][' + option_value_row + '][price]" value="" placeholder="{{ entry_price }}" class="form-control" /></td>';
+	html += '  <td class="text-right"><select name="product_option[' + option_row + '][product_option_value][' + option_value_row + '][points_prefix]" class="form-control">';
+	html += '    <option value="+">+</option>';
+	html += '    <option value="-">-</option>';
+	html += '  </select>';
+	html += '  <input type="text" name="product_option[' + option_row + '][product_option_value][' + option_value_row + '][points]" value="" placeholder="{{ entry_points }}" class="form-control" /></td>';	
+	html += '  <td class="text-right"><select name="product_option[' + option_row + '][product_option_value][' + option_value_row + '][weight_prefix]" class="form-control">';
+	html += '    <option value="+">+</option>';
+	html += '    <option value="-">-</option>';
+	html += '  </select>';
+	html += '  <input type="text" name="product_option[' + option_row + '][product_option_value][' + option_value_row + '][weight]" value="" placeholder="{{ entry_weight }}" class="form-control" /></td>';
+	html += '  <td class="text-left"><button type="button" onclick="$(this).tooltip(\'destroy\');$(\'#option-value-row' + option_value_row + '\').remove();" data-toggle="tooltip" rel="tooltip" title="{{ button_remove }}" class="btn btn-danger"><i class="fa fa-minus-circle"></i></button></td>';
+	html += '</tr>';
+	
+	$('#option-value' + option_row + ' tbody').append(html);
+        $('[rel=tooltip]').tooltip();
+        
+	option_value_row++;
+}
+//--></script> 
+
+  <script type="text/javascript"><!--
+$('.date').datetimepicker({
+	pickTime: false
+});
+
+$('.time').datetimepicker({
+	pickDate: false
+});
+
+$('.datetime').datetimepicker({
+	pickDate: true,
+	pickTime: true
+});
+//--></script> 
+
+  <script type="text/javascript"><!--
+$('#language a:first').tab('show');
+$('#option a:first').tab('show');
+//--></script>
+
+
+<script type="text/javascript"><!--
+$('input[name=\'selected[]\']').click(function(){
+var len = $('.products_to_upd input:checked').length;
+$('.counter').text(len);
+});
+
+$('input[name=\'sel_desel_all\']').click(function(){
+var len = $('.products_to_upd input:checked').length;
+$('.counter').text(len);
+});
+
+var len = $('.products_to_upd input:checked').length;
+$('.counter').text(len);
+//--></script>
+
+
+<script type="text/javascript"><!--
+$('input[name=\'filter_namex\']').autocomplete({
+	'source': function(request, response) {
+		$.ajax({
+			url: 'index.php?route=catalog/product/autocomplete&user_token={{ user_token }}&filter_name=' +  encodeURIComponent(request),
+			dataType: 'json',
+			success: function(json) {
+				response($.map(json, function(item) {
+					return {
+						label: item['name'],
+						value: item['product_id'],
+						altax: item['model']
+					}
+				}));
+			}
+		});
+	},
+	'select': function(item) {
+		$('input[name=\'filter_namex\']').val(item['label']);
+		$('input[name=\'filter_modelx\']').val(item['altax']);
+		$('input[name=\'product_id_to_options\']').val(item['value']);
+		$('input[name=\'load_product_options\']').click();
+	}
+});
+
+$('input[name=\'filter_modelx\']').autocomplete({
+	'source': function(request, response) {
+		$.ajax({
+			url: 'index.php?route=catalog/product/autocomplete&user_token={{ user_token }}&filter_model=' +  encodeURIComponent(request),
+			dataType: 'json',
+			success: function(json) {
+				response($.map(json, function(item) {
+					return {
+						label: item['model'],
+						value: item['product_id'],
+						altax: item['name']
+					}
+				}));
+			}
+		});
+	},
+	'select': function(item) {
+		$('input[name=\'filter_modelx\']').val(item['label']);
+		$('input[name=\'filter_namex\']').val(item['altax']);
+		$('input[name=\'product_id_to_options\']').val(item['value']);
+		$('input[name=\'load_product_options\']').click();
+	}
+});
+//--></script>
+
+
+
+
+
+<script type="text/javascript"><!--
+
+$('#allfilters_more').click(function(){
+    $('.allfilters_row').show(500);
+    $('#allfilters_more').hide(500);
+    $('#allfilters_less').show();
+    localStorage.setItem('display_allfilters', 'more');
+    
+});
+$('#allfilters_less').click(function(){
+    $('.allfilters_row').hide(500);
+    $('#allfilters_more').show(500);
+    $('#allfilters_less').hide();
+    localStorage.setItem('display_allfilters', 'less');
+});
+if (localStorage.getItem('display_allfilters') == 'less') {
+	$('#allfilters_less').trigger('click');
+} else {
+	$('#allfilters_more').trigger('click');
+}
+
+$('#categs_more').click(function(){
+    $('.categs_div').animate({height:'427px'}, 500);
+    $('#categs_more').hide();
+    $('#categs_less').show();
+    localStorage.setItem('display_categs', 'more');
+    
+});
+$('#categs_less').click(function(){
+    $('.categs_div').animate({height:'66px'}, 500);
+    $('#categs_more').show();
+    $('#categs_less').hide();
+    localStorage.setItem('display_categs', 'less');
+});
+if (localStorage.getItem('display_categs') == 'more') {
+	$('#categs_more').trigger('click');
+} else {
+	$('#categs_less').trigger('click');
+}
+
+$('#manufacts_more').click(function(){
+    $('.manufacts_div').animate({height:'427px'}, 500);
+    $('#manufacts_more').hide();
+    $('#manufacts_less').show();
+    localStorage.setItem('display_manufacts', 'more');
+    
+});
+$('#manufacts_less').click(function(){
+    $('.manufacts_div').animate({height:'66px'}, 500);
+    $('#manufacts_more').show();
+    $('#manufacts_less').hide();
+    localStorage.setItem('display_manufacts', 'less');
+});
+if (localStorage.getItem('display_manufacts') == 'more') {
+	$('#manufacts_more').trigger('click');
+} else {
+	$('#manufacts_less').trigger('click');
+}
+
+$('#filts_more').click(function(){
+    $('.filts_div').animate({height:'427px'}, 500);
+    $('#filts_more').hide();
+    $('#filts_less').show();
+    localStorage.setItem('display_filts', 'more');
+    
+});
+$('#filts_less').click(function(){
+    $('.filts_div').animate({height:'66px'}, 500);
+    $('#filts_more').show();
+    $('#filts_less').hide();
+    localStorage.setItem('display_filts', 'less');
+});
+if (localStorage.getItem('display_filts') == 'more') {
+	$('#filts_more').trigger('click');
+} else {
+	$('#filts_less').trigger('click');
+}
+
+$('#filteredp_more').click(function(){
+    $('.filteredp_div').animate({height:'653px'}, 500);
+    $('#filteredp_more').hide();
+    $('#filteredp_less').show();
+    localStorage.setItem('display_filteredp', 'more');
+    
+});
+$('#filteredp_less').click(function(){
+    $('.filteredp_div').animate({height:'223px'}, 500);
+    $('#filteredp_more').show();
+    $('#filteredp_less').hide();
+    localStorage.setItem('display_filteredp', 'less');
+});
+if (localStorage.getItem('display_filteredp') == 'more') {
+	$('#filteredp_more').trigger('click');
+} else {
+	$('#filteredp_less').trigger('click');
+}
+
+//--></script>
+
+
+
+</div> <!-- id content -->
+{{ footer }}
