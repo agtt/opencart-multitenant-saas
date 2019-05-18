@@ -78,6 +78,12 @@ class ControllerInstallStep3 extends Controller
             $data['error_domain'] = '';
         }
 
+        if (isset($this->error['template'])) {
+            $data['error_template'] = $this->error['template'];
+        } else {
+            $data['error_template'] = '';
+        }
+
         if (isset($this->error['db_database'])) {
             $data['error_db_database'] = $this->error['db_database'];
         } else {
@@ -162,6 +168,12 @@ class ControllerInstallStep3 extends Controller
             $data['domain'] = $this->request->post['domain'];
         } else {
             $data['domain'] = '';
+        }
+
+        if (isset($this->request->post['template'])) {
+            $data['template'] = $this->request->post['template'];
+        } else {
+            $data['template'] = '';
         }
 
         if (isset($this->request->post['db_prefix'])) {

@@ -1,6 +1,6 @@
 <?php
 // Heading
-$_['heading_title']          = 'Configuration';
+$_['heading_title']          = 'Create Website';
 
 // Text
 $_['text_step_3']            = 'Enter your database and administration details';
