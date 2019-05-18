@@ -23,7 +23,7 @@ define('DIR_DOWNLOAD', $env->getTenantDirectory() . 'download/');
 define('DIR_LOGS', $env->getTenantDirectory() . 'logs/');
 define('DIR_MODIFICATION', DIR_STORAGE . 'modification/');
 define('DIR_SESSION', $env->getTenantDirectory() . 'session/');
-define('DIR_UPLOAD', $env->getTenantDirectory() . 'upload/');
+define('DIR_UPLOAD', DIR_STORAGE . 'upload/');
 require $env->getTenantDirectory() . 'config.php';
 
 // OpenCart API
