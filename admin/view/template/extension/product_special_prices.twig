@@ -1,0 +1,275 @@
+<form action="POST" id="popup-form">
+    <div style="{% if t != 'discount' %}display:none;{% endif %}">
+        <h3>{{ discounts_title }}</h3>
+        <div id="tab-discount">
+            <table id="discount" class="table list product-extra-table">
+              <thead>
+                <tr>
+                  <td class="left">{{ entry_customer_group }}</td>
+                  <td class="right">{{ entry_quantity }}</td>
+                  <td class="right">{{ entry_priority }}</td>
+                  <td class="right">{{ entry_price }}</td>
+                  <td class="left">{{ entry_date_start }}</td>
+                  <td class="left">{{ entry_date_end }}</td>
+                  <td></td>
+                </tr>
+              </thead>
+              {% set discount_row = 0 %}
+              {% for product_discount in product_discounts %}
+                <tbody id="discount-row{{ discount_row }}">
+                  <tr>
+                    <td class="left">
+                      <select 
+                        name="product_discount[{{ discount_row }}][customer_group_id]"
+                      >
+                        {% for customer_group in customer_groups %}
+                          {% if customer_group.customer_group_id == product_discount.customer_group_id %}
+                            <option 
+                              value="{{ customer_group.customer_group_id }}" 
+                              selected="selected"
+                            >
+                              {{ customer_group.name }}
+                            </option>
+                          {% else  %}
+                            <option 
+                              value="{{ customer_group.customer_group_id }}"
+                            >
+                              {{ customer_group.name }}
+                            </option>
+                          {% endif %}
+                        {% endfor %}
+                      </select>
+                    </td>
+                    <td class="right">
+                      <input 
+                        style="text-align:right" 
+                        type="text" 
+                        name="product_discount[{{ discount_row }}][quantity]" 
+                        value="{{ product_discount.quantity }}" 
+                        size="2" 
+                      />
+                    </td>
+                    <td class="right">
+                      <input 
+                        style="text-align:right" 
+                        type="text" 
+                        name="product_discount[{{ discount_row }}][priority]" 
+                        value="{{ product_discount.priority }}" 
+                        size="2" 
+                      />
+                    </td>
+                    <td class="right">
+                      <input 
+                        style="text-align:right" 
+                        type="text" 
+                        name="product_discount[{{ discount_row }}][price]" 
+                        class="gross-price-field" 
+                        value="{{ product_discount.price }}" 
+                      />
+                    </td>
+                    <td class="left">
+                      <input 
+                        style="text-align:center" 
+                        type="text" 
+                        name="product_discount[{{ discount_row }}][date_start]" 
+                        value="{% if product_discount.date_start != '0000-00-00' %}{{ product_discount.date_start }}{% endif %}" 
+                        class="date datepicker" 
+                        data-format="YYYY-MM-DD" 
+                        data-date-format="YYYY-MM-DD"
+                      />
+                    </td>
+                    <td class="left">
+                      <input 
+                        style="text-align:center" 
+                        type="text" 
+                        name="product_discount[{{ discount_row }}][date_end]" 
+                        value="{% if product_discount.date_end != '0000-00-00' %}{{ product_discount.date_end }}{% endif %}" 
+                        class="date datepicker" 
+                        data-format="YYYY-MM-DD" 
+                        data-date-format="YYYY-MM-DD"
+                      />
+                    </td>
+                    <td class="left">
+                      <a 
+                        onclick="$('#discount-row{{ discount_row }}').remove();" 
+                        class="btn btn-default button"
+                      >
+                        <span>{{ button_remove }}</span>
+                      </a>
+                    </td>
+                  </tr>
+                </tbody>
+                {% set discount_row = discount_row + 1 %}
+              {% endfor %}
+              <tfoot>
+                <tr>
+                  <td colspan="6"></td>
+                  <td class="left">
+                    <a 
+                      onclick="addDiscount();" 
+                      class="btn btn-default button"
+                    >
+                      <span>{{ ad_button }}</span>
+                    </a>
+                  </td>
+                </tr>
+              </tfoot>
+            </table>
+        </div>
+    </div>
+    <div style="{% if t != 'special' %}display:none;{% endif %}">
+        <h3>{{ special_title }}</h3>
+        <div id="tab-special">
+          <table id="special" class="table list product-extra-table">
+            <thead>
+              <tr>
+                <td class="left">{{ entry_customer_group }}</td>
+                <td class="right">{{ entry_priority }}</td>
+                <td class="right">{{ entry_price }}</td>
+                <td class="left">{{ entry_date_start }}</td>
+                <td class="left">{{ entry_date_end }}</td>
+                <td></td>
+              </tr>
+            </thead>
+            {% set special_row = 0 %}
+            {% for product_special in product_specials %}
+              <tbody id="special-row{{ special_row }}">
+                <tr>
+                  <td class="left">
+                    <select name="product_special[{{ special_row }}][customer_group_id]">
+                      {% for customer_group in customer_groups %}
+                        {% if customer_group.customer_group_id == product_special.customer_group_id %}
+                          <option 
+                            value="{{ customer_group.customer_group_id }}" 
+                            selected="selected"
+                          >
+                            {{ customer_group.name }}
+                          </option>
+                        {% else %}
+                          <option 
+                            value="{{ customer_group.customer_group_id }}"
+                          >
+                            {{ customer_group.name }}
+                          </option>
+                        {% endif %}
+                      {% endfor %}
+                    </select>
+                  </td>
+                  <td class="right">
+                    <input 
+                      style="text-align:right" 
+                      type="text" 
+                      name="product_special[{{ special_row }}][priority]" 
+                      value="{{ product_special.priority }}" 
+                      size="2" 
+                    />
+                  </td>
+                  <td class="right">
+                    <input 
+                      style="text-align:right" 
+                      type="text" 
+                      name="product_special[{{ special_row }}][price]" 
+                      class="gross-price-field" 
+                      value="{{ product_special.price }}" 
+                    />
+                  </td>
+                  <td class="left">
+                    <input 
+                      style="text-align:center" 
+                      type="text" 
+                      name="product_special[{{ special_row }}][date_start]" 
+                      value="{% if product_special.date_start != '0000-00-00' %}{{ product_special.date_start }}{% endif %}" 
+                      class="date datepicker" 
+                      data-format="YYYY-MM-DD" 
+                      data-date-format="YYYY-MM-DD"
+                    />
+                  </td>
+                  <td class="left">
+                    <input 
+                      style="text-align:center" 
+                      type="text" 
+                      name="product_special[{{ special_row }}][date_end]" 
+                      value="{% if product_special.date_end != '0000-00-00' %}{{ product_special.date_end }}{% endif %}" 
+                      class="date datepicker" 
+                      data-format="YYYY-MM-DD" 
+                      data-date-format="YYYY-MM-DD"
+                    />
+                  </td>
+                  <td class="left">
+                    <a 
+                      onclick="$('#special-row{{ special_row }}').remove();" 
+                      class="btn btn-default button"
+                    >
+                      <span>{{ button_remove }}</span>
+                    </a>
+                  </td>
+                </tr>
+              </tbody>
+              {% set special_row = special_row + 1 %}
+            {% endfor %}
+            <tfoot>
+              <tr>
+                <td colspan="5"></td>
+                <td class="left">
+                  <a 
+                    onclick="addSpecial();" 
+                    class="btn btn-default button"
+                  >
+                    <span>{{ ad_button }}</span>
+                  </a>
+                </td>
+              </tr>
+            </tfoot>
+          </table>
+        </div>
+    </div>
+    <input type="hidden" name="product_id" value="{{ product_id }}">
+</form>    
+        
+<script type="text/javascript">
+var discount_row = {{ discount_row }};
+
+function addDiscount() {
+	html  = '<tbody id="discount-row' + discount_row + '" class="product-extra-table">';
+	html += '  <tr>'; 
+    html += '<td class="left"><select name="product_discount[' + discount_row + '][customer_group_id]">';
+    {% for customer_group in customer_groups %}
+      html += '<option value="{{ customer_group.customer_group_id }}">{{ customer_group.name }}</option>';
+    {% endfor %}
+    html += '</select></td>';		
+    html += '<td class="right"><input style="text-align:right" type="text" name="product_discount[' + discount_row + '][quantity]" value="" size="2" /></td>';
+    html += '    <td class="right"><input style="text-align:right" type="text" name="product_discount[' + discount_row + '][priority]" value="" size="2" /></td>';
+	html += '    <td class="right"><input style="text-align:right" type="text" class="gross-price-field" name="product_discount[' + discount_row + '][price]" value="" /></td>';
+    html += '    <td class="left"><input style="text-align:center" type="text" name="product_discount[' + discount_row + '][date_start]" value="" class="date datepicker" data-format="YYYY-MM-DD" data-date-format="YYYY-MM-DD"/></td>';
+	html += '    <td class="left"><input style="text-align:center" type="text" name="product_discount[' + discount_row + '][date_end]" value="" class="date datepicker" data-format="YYYY-MM-DD" data-date-format="YYYY-MM-DD"/></td>';
+	html += '    <td class="left"><a onclick="$(\'#discount-row' + discount_row + '\').remove();" class="btn btn-default button"><span>{{ button_remove }}</span></a></td>';
+	html += '  </tr>';	
+    html += '</tbody>';
+	
+	$('#discount tfoot').before(html);
+	discount_row++;
+}
+//--></script> 
+<script type="text/javascript"><!--
+var special_row = {{ special_row }};
+
+function addSpecial() {
+	html  = '<tbody id="special-row' + special_row + '" class="product-extra-table">';
+	html += '<tr>'; 
+    html += '<td class="left"><select name="product_special[' + special_row + '][customer_group_id]">';
+    {% for customer_group in customer_groups %}
+      html += '<option value="{{ customer_group.customer_group_id }}">{{ customer_group.name }}</option>';
+    {% endfor %}
+    html += '</select></td>';		
+    html += '<td class="right"><input style="text-align:right" type="text" name="product_special[' + special_row + '][priority]" value="" size="2" /></td>';
+	html += '    <td class="right"><input style="text-align:right" type="text" class="gross-price-field" name="product_special[' + special_row + '][price]" value="" /></td>';
+    html += '    <td class="left"><input style="text-align:center" type="text" name="product_special[' + special_row + '][date_start]" value="" class="date datepicker" data-format="YYYY-MM-DD" data-date-format="YYYY-MM-DD"/></td>';
+	html += '    <td class="left"><input style="text-align:center" type="text" name="product_special[' + special_row + '][date_end]" value="" class="date datepicker" data-format="YYYY-MM-DD" data-date-format="YYYY-MM-DD"/></td>';
+	html += '    <td class="left"><a onclick="$(\'#special-row' + special_row + '\').remove();" class="btn btn-default button"><span>{{ button_remove }}</span></a></td>';
+	html += '  </tr>';
+    html += '</tbody>';
+	
+	$('#special tfoot').before(html);
+	special_row++;
+}
+</script> 

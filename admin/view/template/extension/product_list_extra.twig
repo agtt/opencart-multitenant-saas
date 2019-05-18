@@ -1,0 +1,2784 @@
+<div id="product-extra-wrapper" class="product-extra-wrapper {% if (ajaxed == true) %} ajaxed {% endif %}">
+	{% if (ajaxed != true) %}
+		{{ header }}{{ column_left }}
+		
+		<div id="content">
+			<div class="hidden">
+				<span class="enabled">{{ text_enabled }}</span>
+				<span class="disabled">{{ text_disabled }}</span>
+				<span class="yes">{{ text_yes }}</span>
+				<span class="no">{{ text_no }}</span>
+			</div>
+			<div class="page-header">
+				<div class="container-fluid">
+					{# Action buttons #}
+					<div class="pull-right">
+						{% if (languages) %}
+							<div class="btn-group language-selector">
+								<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+									Language: 
+									<span id="selected-language">
+										{{ selected_lang }}
+									</span> 
+									<span class="caret"></span>
+								</button>
+
+								<ul class="dropdown-menu language-selection" role="menu">
+									{% for language in languages %}
+										<li>
+											<a 
+												href="#" 
+												data-code="{{ language.name }}" 
+												data-id="{{ language.language_id }}">{{ language.name }}
+											</a>
+										</li>
+									{% endfor %}
+								</ul>
+							</div>
+						{% endif %}
+
+						<a 
+							href="{{ insert }}" 
+							class="btn btn-primary insert-product" 
+							data-toggle="tooltip" 
+							title="{{ button_insert }}"
+						>
+							<i class="fa fa-plus"></i>
+						</a>
+
+						<button 
+							type="button" 
+							formaction="{{ copy }}" 
+							data-toggle="tooltip" 
+							title="{{ button_copy }}" 
+							class="btn btn-default btn-ipe-action copy"
+						>
+							<i class="fa fa-copy"></i>
+						</button>
+						
+						<button 
+							type="button" 
+							formaction="{{ delete }}" 
+							data-toggle="tooltip" 
+							title="{{ button_delete }}" 
+							class="btn btn-danger btn-ipe-action delete" 
+						>
+							<i class="fa fa-trash-o"></i>
+						</button>
+						
+						<a 
+							class="btn btn-info copy-default-product" 
+							href="{{ copy }}" 
+							data-toggle="tooltip" 
+							title="{{ copy_default_product }}"
+						>
+							<i class="fa fa-file-o"></i>
+						</a>
+						
+						<a 
+							onclick="editDefaultProduct()" 
+							class="btn btn-info default-product" 
+							href="index.php?route=catalog/product/edit&user_token={{ user_token }}&product_id=-1" 
+							data-toggle="tooltip" 
+							title="{{ edit_default_product }}"
+						>
+							<i class="fa fa-pencil-square-o"></i>
+						</a>
+						<button 
+							class="btn btn-warning columns-button" 
+							title="{{ column_switch }}" 
+							data-toggle="tooltip"
+						>
+							<i class="fa fa-check-square-o"></i>
+						</button>
+						
+						<button 
+							class="btn btn-default settings-button" 
+							title="{{ settings_switch }}" 
+							data-toggle="tooltip"
+						>
+							<i class="fa fa-cogs"></i>
+						</button>
+						<!--view-hook-buttons-top-->  
+					</div>
+					
+					{# Title & breadcrumbs #}
+					<h1>{{ heading_title }}</h1>
+					<ul class="breadcrumb">
+						{% for breadcrumb in breadcrumbs %}
+							<li>
+								<a href="{{ breadcrumb.href }}">
+									{{ breadcrumb.text }}
+								</a>
+							</li>
+						{% endfor %}
+					</ul>
+				</div>
+			</div>
+
+			<div class="container-fluid">
+				{% if error_warning %}
+					<div class="alert alert-danger alert-dismissible"><i class="fa fa-exclamation-circle"></i> {{ error_warning }}
+						<button type="button" class="close" data-dismiss="alert">&times;</button>
+					</div>
+				{% endif %}
+				{% if success %}
+					<div class="alert alert-success alert-dismissible"><i class="fa fa-check-circle"></i> {{ success }}
+						<button type="button" class="close" data-dismiss="alert">&times;</button>
+					</div>
+				{% endif %}
+				<div 
+					class="
+						column-switcher 
+						{% if attribute(cookies, 'show-column-checkboxes') %}
+							hide-column
+						{% endif %}
+					"
+				>
+					<div>
+						<a href="#" class="toggle-all">{{ all_text }}</a>
+					</div>
+					<br>
+					<label class="checkbox-inline">
+						<input type="checkbox" class="switcher" checked="checked" name="id-column"> 
+						{{ id_text }}
+					</label>
+					<label class="checkbox-inline">
+						<input type="checkbox" class="switcher" checked="checked" name="image-column"> 
+						{{ image_column_switch }}
+					</label>
+					<label class="checkbox-inline">
+						<input type="checkbox" class="switcher" checked="checked" name="product-column"> 
+						{{ product_column_switch }}
+					</label>
+					<label class="checkbox-inline">
+						<input type="checkbox" class="switcher" checked="checked" name="model-column"> 
+						{{ model_column_switch }}
+					</label>
+					<label class="checkbox-inline">
+						<input type="checkbox" class="switcher" checked="checked" name="category-column"> 
+						{{ category_column_switch }}
+					</label>
+					<label class="checkbox-inline">
+						<input type="checkbox" class="switcher" checked="checked" name="filter-column"> 
+						{{ filter_column_switch }}
+					</label>
+					<label class="checkbox-inline">
+						<input type="checkbox" class="switcher" checked="checked" name="manufacturer-column"> 
+						{{ manufacturer_column_switch }}
+					</label>
+					{% if stores|length > 0 %}
+						<label class="checkbox-inline">
+							<input type="checkbox" class="switcher" checked="checked" name="stores-column">
+							{{ stores_column_switch }}
+						</label>
+					{% endif %}
+					<label class="checkbox-inline">
+						<input type="checkbox" class="switcher" checked="checked" name="price-column"> 
+						{{ price_column_switch }}
+					</label>
+					<label class="checkbox-inline">
+						<input type="checkbox" class="switcher" checked="checked" name="frontend-price-column">
+						{{ frontend_price_column_switch }}
+					</label>
+					<label class="checkbox-inline">
+						<input type="checkbox" class="switcher" checked="checked" name="qty-column">
+						{{ qty_column_switch }}
+					</label>
+					<label class="checkbox-inline">
+						<input type="checkbox" class="switcher" checked="checked" name="minimum-column">
+						{{ minimum_column_switch }}
+					</label>
+					<label class="checkbox-inline">
+						<input type="checkbox" class="switcher" checked="checked" name="status-column">
+						{{ status_column_switch }}
+					</label>
+					<label class="checkbox-inline">
+						<input type="checkbox" class="switcher" checked="checked" name="subtract-column">
+						{{ subtract_column_switch }}
+					</label>
+					<label class="checkbox-inline">
+						<input type="checkbox" class="switcher" checked="checked" name="shipping-column">
+						{{ shipping_column_switch }}
+					</label>
+					<label class="checkbox-inline">
+						<input type="checkbox" class="switcher" checked="checked" name="order-column">
+						{{ order_column_switch }}
+					</label>
+					<label class="checkbox-inline">
+						<input type="checkbox" class="switcher" checked="checked" name="sku-column">
+						{{ sku_column_switch }}
+					</label>
+					<label class="checkbox-inline">
+						<input type="checkbox" class="switcher" checked="checked" name="upc-column">
+						{{ upc_column_switch }}
+					</label>
+					<label class="checkbox-inline">
+						<input type="checkbox" class="switcher" checked="checked" name="location-column">
+						{{ location_column_switch }}
+					</label>
+					<label class="checkbox-inline">
+						<input type="checkbox" class="switcher" checked="checked" name="date-available-column">
+						{{ date_available_column_switch }}
+					</label>
+					<label class="checkbox-inline">
+						<input type="checkbox" class="switcher" checked="checked" name="seo-column">
+						{{ seo_column_switch }}
+					</label>
+					<label class="checkbox-inline">
+						<input type="checkbox" class="switcher" checked="checked" name="weight-column">
+						{{ weight_column_switch }}
+					</label>
+					<label class="checkbox-inline">
+						<input type="checkbox" class="switcher" checked="checked" name="weight-class-column">
+						{{ weight_class_column_switch }}
+					</label>
+					<label class="checkbox-inline">
+						<input type="checkbox" class="switcher" checked="checked" name="tax-class-column">
+						{{ tax_class_column_switch }}
+					</label>
+					<label class="checkbox-inline">
+						<input type="checkbox" class="switcher" checked="checked" name="stock-status-column">
+						{{ out_of_stock_column_switch }}
+					</label>
+					<label class="checkbox-inline">
+						<input type="checkbox" class="switcher" checked="checked" name="dimensions-column">
+						{{ dimensions_column_switch }}
+					</label>
+					<label class="checkbox-inline">
+						<input type="checkbox" class="switcher" checked="checked" name="length-class-column">
+						{{ length_class_column_switch }}
+					</label>
+					<label class="checkbox-inline">
+						<input type="checkbox" class="switcher" checked="checked" name="product-meta-title-column">
+						{{ product_meta_title_switch }}
+					</label>
+					<label class="checkbox-inline">
+						<input type="checkbox" class="switcher" checked="checked" name="product-meta-keyword-column">
+						{{ product_meta_keyword_switch }}
+					</label>
+					<label class="checkbox-inline">
+						<input type="checkbox" class="switcher" checked="checked" name="product-meta-description-column">
+						{{ product_meta_description_switch }}
+					</label>
+					<label class="checkbox-inline">
+						<input type="checkbox" class="switcher" checked="checked" name="ean-column"> 
+						{{ ean_column_switch }}
+					</label>
+					<label class="checkbox-inline">
+						<input type="checkbox" class="switcher" checked="checked" name="jan-column">
+						{{ jan_column_switch }}
+					</label>
+					<label class="checkbox-inline">
+					    <input type="checkbox" class="switcher" checked="checked" name="mpn-column">
+					    {{ mpn_column_switch }}
+					</label>
+					<label class="checkbox-inline">
+					  <input type="checkbox" class="switcher" checked="checked" name="isbn-column">
+					  {{ isbn_column_switch }}
+					</label>
+					<!--view-hook-switcher-buttons-->
+					<label class="checkbox-inline">
+						<input type="checkbox" class="switcher" checked="checked" name="points-column"> {{ column_points }}
+					</label>
+					<label class="checkbox-inline">
+						<input type="checkbox" class="switcher" checked="checked" name="tags-column"> {{ tags_column_switch }}
+					</label>
+					<label class="checkbox-inline">
+						<input type="checkbox" class="switcher" checked="checked" name="featured-column"> {{ featured_column_switch }}
+					</label>
+					<label class="checkbox-inline">
+						<input type="checkbox" class="switcher" checked="checked" name="discount-price-column">
+						{{ discount_price_column_switch }}
+					</label>
+					<label class="checkbox-inline">
+						<input type="checkbox" class="switcher" checked="checked" name="special-price-column">
+						{{ special_price_column_switch }}
+					</label>
+					<label class="checkbox-inline">
+						<input type="checkbox" class="switcher" checked="checked" name="discounts-column">
+						{{ discounts_column_switch }}
+					</label>
+					<label class="checkbox-inline">
+						<input type="checkbox" class="switcher" checked="checked" name="specials-column">
+						{{ specials_column_switch }}
+					</label>
+					<label class="checkbox-inline">
+						<input type="checkbox" class="switcher" checked="checked" name="edit-column">
+						{{ edit_column_switch }}
+					</label>
+					<label class="checkbox-inline">
+						<input type="checkbox" class="switcher" checked="checked" name="view-column">
+						{{ view_column_switch }}
+					</label>
+					<div style="clear:both"></div>
+				</div>
+				<div class="settings-box hidden">
+					<div class="settings-box-wrapper">
+						<div class="cb">
+							<input type="checkbox" class="switcher" checked="checked" name="popup-edit" />
+							{{ edit_column_popup_switch }}
+						</div>
+						<div class="cb">
+							<input type="checkbox" class="switcher" checked="checked" name="remove-auto-redirect" />
+							{{ remove_auto_redirect }}
+						</div>
+						<div class="db">
+							<input type="checkbox" class="switcher" checked="checked" name="remove-delete-confirmation" />
+							{{ remove_delete_confirm }}
+						</div>
+						<!--view-hook-settings-->
+					</div>
+				</div>
+			</div>
+		<form 
+			action="{{ delete }}" 
+			method="post" 
+			enctype="multipart/form-data" 
+			id="form-product-extra" 
+			current="index.php?route=extension/product_extra&user_token={{ user_token }}"
+		>
+		<div class="container-fluid table-responsive">
+	{% endif %}
+		        <table class="table table-bordered table-hover" id="product-extra-table">
+		        	<thead>
+		        		<!-- header title -->
+		            	<tr>
+		            		<td width="1" style="text-align: center;">
+		              			<input 
+		              				type="checkbox" 
+		              				onclick="$('input[name*=\'selected\']').attr('checked', this.checked);" 
+		              			/>
+		              		</td>
+							<td 
+								class="
+									left id-column 
+									{% if attribute(cookies, 'id-column') is empty %}
+										hide-column
+									{% endif %}
+								"
+							>
+			              		{% if sort == 'p.id' %}
+			                		<a href="{{ sort_id }}" class="{{ order|lower }}">{{ id_text }}</a>
+			                	{% else %}
+			                		<a href="{{ sort_id }}" class="{{ order|lower }}">{{ id_text }}</a>
+			                	{% endif %}
+		            		</td>
+		              		<td 
+		              			class="
+		              				center image-column 
+									{% if attribute(cookies, 'image-column') is empty %}
+										hide-column
+									{% endif %}
+		              			"
+		              		>
+		              			{{ column_image }}
+		              		</td>
+		              		<td 
+		              			class="
+		              				left product-column
+		              				{% if attribute(cookies, 'product-column') is empty %}
+										hide-column
+									{% endif %} 
+								"
+							>
+								{% if sort == 'pd.name' %}
+		                			<a href="{{ sort_name }}" class="{{ order|lower }}">{{ column_name }}</a>
+		                		{% else %}
+		                			<a href="{{ sort_name }}">{{ column_name }}</a>
+		                		{% endif %}
+		                	</td>
+		              
+		              		<td 
+		              			class="
+		              				left model-column 
+		              				{% if attribute(cookies, 'model-column') is empty %}
+										hide-column
+									{% endif %}
+								"
+							>
+								{% if sort == 'p.model' %}
+		                			<a href="{{ sort_model }}" class="{{ order|lower }}">{{ column_model }}</a>
+		                		{% else %}
+		                			<a href="{{ sort_model }}">{{ column_model }}</a>
+		                		{% endif %}
+		            		</td>
+
+
+		              		<td 
+		              			class="
+			              			left product-meta-title-column 
+									{% if attribute(cookies, 'product-meta-title-column') is empty %}
+										hide-column
+									{% endif %}
+								"
+							>
+								{% if sort == 'pd.meta_title' %}
+		                			<a href="{{ sort_meta_title }}" class="{{ order|lower }}">{{ column_meta_title }}</a>
+		                		{% else %}
+		                			<a href="{{ sort_meta_title }}">{{ column_meta_title }}</a>
+		                		{% endif %}
+		                	</td>
+		                	<td 
+		              			class="
+			              			left product-meta-keyword-column 
+									{% if attribute(cookies, 'product-meta-keyword-column') is empty %}
+										hide-column
+									{% endif %}
+								"
+							>
+								{% if sort == 'pd.meta_keyword' %}
+		                			<a href="{{ sort_meta_keyword }}" class="{{ order|lower }}">{{ column_meta_keyword }}</a>
+		                		{% else %}
+		                			<a href="{{ sort_meta_keyword }}">{{ column_meta_keyword }}</a>
+		                		{% endif %}
+		                	</td>
+		                	<td 
+		              			class="
+			              			left product-meta-description-column 
+									{% if attribute(cookies, 'product-meta-description-column') is empty %}
+										hide-column
+									{% endif %}
+								"
+							>
+								{% if sort == 'pd.meta_description' %}
+		                			<a href="{{ sort_meta_description }}" class="{{ order|lower }}">{{ column_meta_description }}</a>
+		                		{% else %}
+		                			<a href="{{ sort_meta_description }}">{{ column_meta_description }}</a>
+		                		{% endif %}
+		                	</td>
+		              		<td 
+		              			class="
+		              				category-column 
+		              				{% if attribute(cookies, 'category-column') is empty %}
+										hide-column
+									{% endif %}
+								"
+							>{{ column_category }}
+		              		</td>
+		              		<td 
+		              			class="
+		              				filter-column 
+		              				{% if attribute(cookies, 'filter-column') is empty %}
+										hide-column
+									{% endif %}
+								"
+							>{{ column_filter }}
+		              		</td>
+		              		<td 
+		              			class="
+		              				left manufacturer-column 
+		              				{% if attribute(cookies, 'manufacturer-column') is empty %}
+										hide-column
+									{% endif %}
+								"
+							>
+								{% if sort == 'm.name' %}
+	                				<a href="{{ sort_manufacturer }}" class="{{ order|lower }}">{{ column_manufacturer }}</a>
+	                			{% else %}
+	                				<a href="{{ sort_manufacturer }}">{{ column_manufacturer }}</a>
+	                			{% endif %}
+	                		</td>
+							{% if stores|length > 0 %}
+		              			<td 
+		              				class="
+		              					stores-column 
+										{% if attribute(cookies, 'stores-column') is empty %}
+											hide-column
+										{% endif %}
+									"
+								>
+		                			{{column_store }}
+		              			</td>
+		              			<td 
+		              				class="
+		              					stores-column 
+		              					{% if attribute(cookies, 'stores-column') is empty %}
+											hide-column
+										{% endif %}
+									"
+								>
+		                			{{ store_frontend_text }}
+		              			</td>
+		              		{% endif %}
+		              		<td 
+		              			class="
+		              				right price-column 
+		              				{% if attribute(cookies, 'price-column') is empty %}
+										hide-column
+									{% endif %}
+								"
+							>
+								{% if sort == 'p.price' %}
+		                			<a href="{{ sort_price }}" class="{{ order|lower }}">
+		                				{{ column_price }}
+		                			</a>
+		                		{% else %}
+		                			<a href="{{ sort_price }}">{{ column_price }}</a>
+		                		{% endif %}
+		                	</td>
+		              		<td 
+		              			class="
+		              				right frontend-price-column 
+		              				{% if attribute(cookies, 'frontend-price-column') is empty %}
+										hide-column
+									{% endif %}
+								"
+							>
+		                		{{ frontend_price }}
+		              		</td>
+		              		<td 
+		              			class="
+		              				right qty-column 
+		              				{% if attribute(cookies, 'qty-column') is empty %}
+										hide-column
+									{% endif %}
+								"
+							>
+								{% if sort == 'p.quantity' %}
+		                			<a href="{{ sort_quantity }}" class="{{ order|lower }}">{{ column_quantity }}</a>
+		                		{% else %}
+		                			<a href="{{ sort_quantity }}">{{ column_quantity }}</a>
+		                		{% endif %}
+		                	</td>
+		                	<td 
+		              			class="
+		              				right minimum-column 
+		              				{% if attribute(cookies, 'minimum-column') is empty %}
+										hide-column
+									{% endif %}
+								"
+							>
+								{% if sort == 'p.minimum' %}
+		                			<a href="{{ sort_minimum }}" class="{{ order|lower }}">{{ column_minimum }}</a>
+		                		{% else %}
+		                			<a href="{{ sort_minimum }}">{{ column_minimum }}</a>
+		                		{% endif %}
+		                	</td>
+		              		<td 
+		              			class="
+		              				left status-column 
+		              				{% if attribute(cookies, 'status-column') is empty %}
+										hide-column
+									{% endif %}
+								"
+							>
+								{% if sort == 'p.status' %}
+		                			<a href="{{ sort_status }}" class="{{ order|lower }}">
+		                				{{ column_status }}
+		                			</a>
+		                		{% else %}
+		                			<a href="{{ sort_status }}">{{ column_status }}</a>
+		                		{% endif %}
+		                	</td>
+		              		<td 
+		              			class="
+		              				left subtract-column 
+		              				{% if attribute(cookies, 'subtract-column') is empty %}
+										hide-column
+									{% endif %}
+								"
+							>
+								{% if sort == 'p.subtract' %}
+		                			<a href="{{ sort_subtract }}" class="{{ order|lower }}">{{ column_subtract }}</a>
+		                		{% else %}
+		                			<a href="{{ sort_subtract }}">{{ column_subtract }}</a>
+		                		{% endif %}
+		                	</td>
+		                	<td 
+		              			class="
+		              				left shipping-column 
+		              				{% if attribute(cookies, 'shipping-column') is empty %}
+										hide-column
+									{% endif %}
+								"
+							>
+								{% if sort == 'p.shipping' %}
+		                			<a href="{{ sort_shipping }}" class="{{ order|lower }}">{{ column_shipping }}</a>
+		                		{% else %}
+		                			<a href="{{ sort_shipping }}">{{ column_shipping }}</a>
+		                		{% endif %}
+		                	</td>
+		              		<td 
+		              			class="
+		              				right sku-column 
+		              				{% if attribute(cookies, 'sku-column') is empty %}
+										hide-column
+									{% endif %}
+								"
+							>
+								{% if sort == 'p.sku' %}
+		                			<a href="{{ sort_sku }}" class="{{ order|lower }}">{{ column_sku }}</a>
+		                		{% else %}
+		                			<a href="{{ sort_sku }}">{{ column_sku }}</a>
+		                		{% endif %}
+		                	</td>
+		              		<td 
+		              			class="
+		              				right upc-column 
+		              				{% if attribute(cookies, 'upc-column') is empty %}
+										hide-column
+									{% endif %}
+								"
+							>
+								{% if sort == 'p.upc' %}
+		                			<a href="{{ sort_upc }}" class="{{ order|lower }}">{{ column_upc }}</a>
+		                		{% else %}
+		                			<a href="{{ sort_upc }}">{{ column_upc }}</a>
+		                		{% endif %}
+		                	</td>
+		              		<td 
+		              			class="
+		              				right location-column 
+		              				{% if attribute(cookies, 'location-column') is empty %}
+										hide-column
+									{% endif %}
+								"
+							>
+								{% if sort == 'p.location' %}
+		                			<a href="{{ sort_location }}" class="{{ order|lower }}">{{ column_location }}</a>
+		                		{% else %}
+		                			<a href="{{ sort_location }}">{{ column_location }}</a>
+		                		{% endif %}
+		                	</td>
+		              		<td 
+		              			class="
+		              				right date-available-column 
+		              				{% if attribute(cookies, 'date-available-column') is empty %}
+										hide-column
+									{% endif %}
+								"
+							>
+								{% if sort == 'p.date_available' %}
+		                			<a href="{{ sort_date_available }}" class="{{ order|lower }}">{{ column_date_available }}</a>
+		                		{% else %}
+		                			<a href="{{ sort_date_available }}">{{ column_date_available }}</a>
+		                		{% endif %}
+		                	</td>
+							<!-- Seo Keyword -->
+		              		<td 
+		              			class="
+		              				right seo-column 
+		              				{% if attribute(cookies, 'seo-column') is empty %}
+										hide-column
+									{% endif %}
+								"
+							>
+								{{ seo_column }}
+							</td>
+							<!-- Weight-->
+		              		<td 
+		              			class="
+		              				right weight-column 
+		              				{% if attribute(cookies, 'weight-column') is empty %}
+										hide-column
+									{% endif %}
+								"
+							>
+								{% if sort == 'p.weight' %}
+		                			<a href="{{ sort_weight }}" class="{{ order|lower }}">{{ weight_column_switch }}</a>
+		                		{% else %}
+		                			<a href="{{ sort_weight }}">{{ weight_column_switch }}</a>
+		                		{% endif %}
+		                	</td>
+							<!-- Weight class -->              
+		              		<td 
+		              			class="
+		              				left weight-class-column 
+		              				{% if attribute(cookies, 'weight-class-column') is empty %}
+										hide-column
+									{% endif %}
+								"
+							>
+								{{ weight_class_column_switch }}
+		            		</td>
+							<!-- Tax class -->
+		              		<td 
+		              			class="
+		              				left tax-class-column 
+		              				{% if attribute(cookies, 'tax-class-column') is empty %}
+										hide-column
+									{% endif %}
+								"
+							>
+								{% if sort == 'tc.title' %}
+		                			<a href="{{ sort_tax_class }}" class="{{ order|lower }}">{{ tax_class_column_switch }}</a>
+		                		{% else %}
+		                			<a href="{{ sort_tax_class }}">{{ tax_class_column_switch }}</a>
+		                		{% endif %}
+		                	</td>
+							<!--Out of stock -->
+		              		<td 
+		              			class="
+		              				stock-status-column 
+		              				{% if attribute(cookies, 'stock-status-column') is empty %}
+										hide-column
+									{% endif %}
+								"
+							>
+		                		{{ out_of_stock_column }}
+							</td>
+							<!-- Dimensions -->
+		              		<td 
+		              			colspan="3" 
+		              			class="
+		              				center dimensions-column 
+		              				{% if attribute(cookies, 'dimensions-column') is empty %}
+										hide-column
+									{% endif %}
+								"
+							>
+								{{ dimensions_column_switch }}
+							</td>
+							<!-- Length class-->
+		              		<td 
+		              			class="
+		              				length-class-column 
+		              				{% if attribute(cookies, 'length-class-column') is empty %}
+										hide-column
+									{% endif %}
+								"
+							>
+								{{ length_class_column_switch }}
+							</td>
+							<td 
+								class="
+									left sort_order order-column 
+									{% if attribute(cookies, 'order-column') is empty %}
+										hide-column
+									{% endif %}
+								"
+							>
+								{% if sort == 'p.sort_order' %}
+		                			<a href="{{ sort_sort_order }}" class="{{ order|lower }}">{{ column_sort_order }}</a>
+		                		{% else %}
+		                			<a href="{{ sort_sort_order }}">{{ column_sort_order }}</a>
+		                		{% endif %}
+		                	</td>
+		                	<td 
+		                		class="
+		                			right ean-column 
+		                			{% if attribute(cookies, 'ean-column') is empty %}
+		                				hide-column
+		                			{% endif %}
+		                		"
+		                	>
+		                		{% if sort == 'p.ean' %}
+		                			<a href="{{ sort_ean }}" class="{{ order|lower }}">{{ column_ean }}</a>
+		                	  	{% else %}
+		                	  		<a href="{{ sort_ean }}">{{ column_ean }}</a>
+		                		{% endif %}
+		                	</td>
+		                	<td 
+		                		class="
+		                			right jan-column 
+		                			{% if attribute(cookies, 'jan-column') is empty %}
+		                				hide-column
+		                			{% endif %}
+		                		"
+		                	>
+		                		{% if sort == 'p.jan' %}
+		                	  		<a href="{{ sort_jan }}" class="{{ order|lower }}">{{ column_jan }}</a>
+		                	  	{% else %}
+		                	  		<a href="{{ sort_jan }}">{{ column_jan }}</a>
+		                	  	{% endif %}
+		                	</td>
+		                	<td 
+		                		class="
+		                			right mpn-column 
+		                			{% if attribute(cookies, 'mpn-column') is empty %}
+		                				hide-column
+		                			{% endif %}
+		                		"
+		                	>
+		                		{% if sort == 'p.mpn' %}
+		                	  		<a href="{{ sort_mpn }}" class="{{ order|lower }}">{{ column_mpn }}</a>
+		                	  	{% else %}
+		                	  		<a href="{{ sort_mpn }}">{{ column_mpn }}</a>
+		                	  	{% endif %}
+		                	</td>
+		                	<td 
+		                		class="
+		                			right isbn-column 
+		                			{% if attribute(cookies, 'isbn-column') is empty %}
+		                				hide-column
+		                			{% endif %}
+		                		"
+		                	>
+		                		{% if sort == 'p.isbn' %}
+		                			<a href="{{ sort_isbn }}" class="{{ order|lower }}">{{ column_isbn }}</a>
+		                	  	{% else %}
+		                	  		<a href="{{ sort_isbn }}">{{ column_isbn }}</a>
+		                	  	{% endif %}
+		                	</td>
+
+							<!--view-hook-table-head-->
+							<td 
+								class="
+									left points-column
+									{% if attribute(cookies, 'points-column') is empty %}
+										hide-column
+									{% endif %}
+								"
+							>
+								{% if sort == 'p.points' %}
+									<a href="{{ sort_points }}" class="{{ order|lower }}">
+										{{ column_points }}
+									</a>
+								{% else %}
+									<a href="{{ sort_points }}">{{ column_points }}</a>
+								{% endif %}
+							</td>
+		              		<td 
+								class="
+									tags-column 
+									{% if attribute(cookies, 'tags-column') is empty %}
+										hide-column
+									{% endif %}
+								"
+							>
+								{{ tags_column_switch }}
+							</td>
+		              		<td 
+		              			class="
+		              				center discount-price-column 
+		              				{% if attribute(cookies, 'discount-price-column') is empty %}
+										hide-column
+									{% endif %}
+								"
+							>
+								{{ discount_price_column_switch }}
+							</td>
+		              		<td 
+		              			class="
+		              				center special-price-column 
+		              				{% if attribute(cookies, 'special-price-column') is empty %}
+										hide-column
+									{% endif %}
+								"
+							>
+								{{ special_price_column_switch }}
+							</td>
+		            		<td class="right actions">{{ column_action }}</td>
+		            	</tr>
+		            	<!-- end header column -->
+		            	<!-- filter column -->
+		            	<tr class="filter">
+							<td></td>
+		            	    <td 
+		            	    	class="
+		            	    		id-column 
+			            	    	{% if attribute(cookies, 'id-column') is empty %}
+										hide-column
+									{% endif %}
+								"
+							>
+								<input type="text" name="filter_id" class="filter form-control" size="4" value="{{ filter_id }}" />
+							</td>
+		            	    <td 
+		            	    	class="
+		            	    		image-column 
+		            	    		{% if attribute(cookies, 'image-column') is empty %}
+										hide-column
+									{% endif %}
+								"
+							></td>
+		            	    <td 
+		            	    	class="
+		            	    		product-column 
+		            	    		{% if attribute(cookies, 'product-column') is empty %}
+										hide-column
+									{% endif %}
+								"
+							>
+								<input type="text" name="filter_name" class="filter form-control" size="10" value="{{ filter_name }}" />
+							</td>
+		            	    <td 
+		            	    	class="
+		            	    		model-column 
+		            	    		{% if attribute(cookies, 'model-column') is empty %}
+										hide-column
+									{% endif %}
+								"
+							>
+								<input type="text" name="filter_model" class="filter form-control" size="10" value="{{ filter_model }}" />
+							</td>
+		            	    <td 
+		            	    	class="
+		            	    		product-meta-title-column 
+		            	    		{% if attribute(cookies, 'product-meta-title-column') is empty %}
+										hide-column
+									{% endif %}
+								"
+							>
+								<input 
+									type="text" 
+									name="filter_meta_title" 
+									class="filter form-control" 
+									size="10" 
+									value="{{ filter_meta_title }}" 
+								/>
+							</td>
+							<td 
+		            	    	class="
+		            	    		product-meta-keyword-column 
+		            	    		{% if attribute(cookies, 'product-meta-keyword-column') is empty %}
+										hide-column
+									{% endif %}
+								"
+							>
+								<input 
+									type="text" 
+									name="filter_meta_keyword" 
+									class="filter form-control" 
+									size="10" 
+									value="{{ filter_meta_keyword }}" 
+								/>
+							</td>
+							<td 
+		            	    	class="
+		            	    		product-meta-description-column 
+		            	    		{% if attribute(cookies, 'product-meta-description-column') is empty %}
+										hide-column
+									{% endif %}
+								"
+							>
+								<input 
+									type="text" 
+									name="filter_meta_description" 
+									class="filter form-control" 
+									size="10" 
+									value="{{ filter_meta_description }}" 
+								/>
+							</td>
+		            	    <td 
+		            	    	class="
+		            	    		category-column 
+		            	    		{% if attribute(cookies, 'category-column') is empty %}
+										hide-column
+									{% endif %}
+								"
+							>
+		            	        <select name="filter_category" class="filter form-control">
+		            	        	<option value="*"></option>
+		            	            {% for key, category in categories %}
+										<option 
+											{% if filter_category == key %}
+												selected="selected" 
+											{% endif %}
+											value="{{ key }}" 
+											title="{{ category }}"
+										>
+											{{ category }}
+										</option>
+									{% endfor %}
+		            	        </select>
+		            	    </td>
+		            	    <td 
+		            	    	class="
+		            	    		filter-column 
+		            	    		{% if attribute(cookies, 'filter-column') is empty %}
+										hide-column
+									{% endif %}
+								"
+							>
+		            	        <select name="filter_filter" class="filter form-control">
+		            	        	<option value="*"></option>
+		            	            {% for key, value in filters %}
+										<option 
+											{% if filter_filter == key %}
+												selected="selected" 
+											{% endif %}
+											value="{{ key }}" 
+											title="{{ value }}"
+										>
+											{{ value }}
+										</option>
+									{% endfor %}
+		            	        </select>
+		            	    </td>
+		            	    <td 
+		            	    	class="
+		            	    		manufacturer-column 
+		            	    		{% if attribute(cookies, 'manufacturer-column') is empty %}
+										hide-column
+									{% endif %}
+								"
+							>
+		            	        <select name="filter_manufacturer" class="filter form-control">
+		            	        	<option value="*"></option>
+		            	            {% for key, manufacturer in manufacturers %}
+										<option 
+											{% if filter_manufacturer == key %}
+												selected="selected" 
+											{% endif %}
+											value="{{ key }}" 
+											title="{{ manufacturer }}"
+										>
+											{{ manufacturer }}
+										</option>
+									{% endfor %}
+		            	        </select>
+		            	    </td>
+		            	    {% if stores|length > 0 %}
+		            	        <td 
+		            	        	class="
+		            	        		stores-column 
+		            	        		{% if attribute(cookies, 'stores-column') is empty %}
+											hide-column
+										{% endif %}
+									"
+								>
+									<select name="filter_store" class="filter form-control">
+		            	                <option value="*"></option>
+		            	                {% if filter_store is same as(0) %}
+		            	                    <option value="0" selected="selected">{{ text_default }}</option>
+		            	                {% else %}
+		            	                    <option value="0">{{ text_default }}</option>
+		            	                {% endif %}
+		            	                
+		            	                {% for store in stores %}
+		            	                    {% if filter_store == store.store_id %}
+		            	                    	<option selected="selected" value="{{ store.store_id }}">{{ store.name }}</option>
+		            	                    {% else %}
+		            	                      <option value="{{ store.store_id }}">{{ store.name }}</option>
+		            	                    {% endif %}
+		            	                    
+		            	                {% endfor %}
+		            	            </select>
+		            	        </td>
+								<td 
+									class="
+										stores-column 
+										{% if attribute(cookies, 'stores-column') is empty %}
+											hide-column
+										{% endif %}
+									"
+								>&nbsp;
+								</td>
+		            	    {% endif %}
+		            	    <td 
+		            	    	align="right" 
+		            	    	class="
+		            	    		price-column 
+		            	    		{% if attribute(cookies, 'price-column') is empty %}
+										hide-column
+									{% endif %}
+								"
+							>
+								<input 
+									class="filter form-control" 
+									type="text" 
+									name="filter_price" 
+									size="6" 
+									value="{{ filter_price }}" 
+									style="text-align: right;" 
+								/>
+							</td>
+		            	    <td 
+		            	    	align="right" 
+		            	    	class="
+		            	    		frontend-price-column 
+		            	    		{% if attribute(cookies, 'frontend-price-column') is empty %}
+										hide-column
+									{% endif %}
+								"
+							>
+								<span class="gross">{{ frontend_price_gross }}</span>
+								<br/>
+								<span class="net">{{ frontend_price_net }}</span>
+							</td>
+		            	    <td 
+		            	    	align="right" 
+		            	    	class="
+		            	    		qty-column 
+		            	    		{% if attribute(cookies, 'qty-column') is empty %}
+										hide-column
+									{% endif %}
+								"
+							>
+								<input 
+									class="filter form-control" 
+									type="text" 
+									name="filter_quantity" 
+									size="4" 
+									value="{{ filter_quantity }}" 
+									style="text-align: right;" 
+								/>
+							</td>
+							<td 
+		            	    	align="right" 
+		            	    	class="
+		            	    		minimum-column 
+		            	    		{% if attribute(cookies, 'minimum-column') is empty %}
+										hide-column
+									{% endif %}
+								"
+							>
+								<input 
+									class="filter form-control" 
+									type="text" 
+									name="filter_minimum" 
+									size="4" 
+									value="{{ filter_minimum }}" 
+									style="text-align: right;" 
+								/>
+							</td>
+		            	    <td 
+		            	    	class="
+		            	    		status-column 
+		            	    		{% if attribute(cookies, 'status-column') is empty %}
+										hide-column
+									{% endif %}
+								"
+							>
+								<select name="filter_status" class="filter form-control">
+		            	            <option value="*"></option>
+		            	            {% if filter_status %}
+		            	                <option value="1" selected="selected">{{ text_enabled }}</option>
+		            	            {% else %}
+		            	                <option value="1">{{ text_enabled }}</option>
+		            	            {% endif %}
+		            	            {% if filter_status is same as(0) %}
+		            	                <option value="0" selected="selected">{{ text_disabled }}</option>
+		            	           	{% else %}
+		            	                <option value="0">{{ text_disabled }}</option>
+		            	            {% endif %}
+		            	        </select>
+		            	    </td>
+		            	    <td 
+		            	    	class="
+		            	    		subtract-column 
+		            	    		{% if attribute(cookies, 'subtract-column') is empty %}
+										hide-column
+									{% endif %}
+								"
+							>
+								<select name="filter_subtract" class="filter form-control">
+		            	        	<option value="*"></option>
+		            	            {% if filter_subtract %}
+		            	            	<option value="1" selected="selected">{{ text_enabled }}</option>
+		            	            {% else %}
+		            	                <option value="1">{{ text_enabled }}</option>
+		            	            {% endif %}
+		            	            {% if filter_subtract is same as(0) %}
+		            	                <option value="0" selected="selected">{{ text_disabled }}</option>
+		            	            {% else %}
+		            	                <option value="0">{{ text_disabled }}</option>
+		            	            {% endif %}
+		            	        </select>
+		            	    </td>
+		            	    <td 
+		            	    	class="
+		            	    		shipping-column 
+		            	    		{% if attribute(cookies, 'shipping-column') is empty %}
+										hide-column
+									{% endif %}
+								"
+							>
+								<select name="filter_shipping" class="filter form-control">
+		            	        	<option value="*"></option>
+		            	            {% if filter_shipping %}
+		            	            	<option value="1" selected="selected">{{ text_enabled }}</option>
+		            	            {% else %}
+		            	                <option value="1">{{ text_enabled }}</option>
+		            	            {% endif %}
+		            	            {% if filter_shipping is same as(0) %}
+		            	                <option value="0" selected="selected">{{ text_disabled }}</option>
+		            	            {% else %}
+		            	                <option value="0">{{ text_disabled }}</option>
+		            	            {% endif %}
+		            	        </select>
+		            	    </td>
+		            	    <td 
+		            	    	align="right" 
+		            	    	class="
+		            	    		sku-column 
+		            	    		{% if attribute(cookies, 'sku-column') is empty %}
+										hide-column
+									{% endif %}
+								"
+							>
+								<input 
+									class="filter form-control" 
+									type="text" 
+									name="filter_sku" 
+									size="4" 
+									value="{{ filter_sku }}" 
+									style="text-align: right;" 
+								/>
+							</td>
+		            	    <td 
+		            	    	align="right" 
+		            	    	class="
+		            	    		upc-column 
+		            	    		{% if attribute(cookies, 'upc-column') is empty %}
+										hide-column
+									{% endif %}
+								"
+							>
+								<input 
+									class="filter form-control" 
+									type="text" 
+									name="filter_upc" 
+									size="4" 
+									value="{{ filter_upc }}" 
+									style="text-align: right;" 
+								/>
+							</td>
+		            	    <td 
+		            	    	align="right" 
+		            	    	class="
+		            	    		location-column 
+		            	    		{% if attribute(cookies, 'location-column') is empty %}
+										hide-column
+									{% endif %}
+								"
+							>
+								<input 
+									class="filter form-control" 
+									type="text" 
+									name="filter_location" 
+									size="4" 
+									value="{{ filter_location }}" 
+									style="text-align: right;" 
+								/>
+							</td>
+		            	    <td 
+		            	    	align="right" 
+		            	    	class="
+		            	    		date-available-column 
+		            	    		{% if attribute(cookies, 'date-available-column') is empty %}
+										hide-column
+									{% endif %}
+								"
+							>
+								<input 
+									class="filter form-control" 
+									type="text" 
+									name="filter_date_available" 
+									size="4" 
+									value="{{ filter_date_available }}" 
+									style="text-align: right;" 
+								/>
+							</td>
+		            	    <td 
+		            	    	align="right" 
+		            	    	class="
+		            	    		seo-column 
+		            	    		{% if attribute(cookies, 'seo-column') is empty %}
+										hide-column
+									{% endif %}
+								"
+							>&nbsp;
+							</td>
+		            		<!-- Weight -->
+		            	    <td 
+		            	    	class="
+		            	    		weight-column 
+		            	    		{% if attribute(cookies, 'weight-column') is empty %}
+										hide-column
+									{% endif %}
+								"
+							>
+								<input 
+									type="text" 
+									name="filter_weight" 
+									class="filter form-control" 
+									size="10" 
+									value="{{ filter_weight }}" 
+								/>
+							</td>
+		            		<!--Weight class-->
+		            	    <td 
+		            	    	class="
+		            	    		weight-class-column 
+		            	    		{% if attribute(cookies, 'weight-class-column') is empty %}
+										hide-column
+									{% endif %}
+								"
+							>
+		            	    	<select name="filter_weight_class" class="filter form-control">
+		            	        	<option value="*"></option>
+		            	            {% for key, weight_class in weight_classes %}
+		            	            	{% if filter_weight_class == key %}
+		            	                    <option selected="selected" value="{{ key }}">{{ weight_class }}</option>
+		            	                {% else %}
+		            	                    <option value="{{ key }}">{{ weight_class }}</option>
+		            	                {% endif %}
+		            	            {% endfor %}
+		            	       	</select>
+		            	    </td>
+		            		<!--Tax class-->
+		            	    <td 
+		            	    	class="
+		            	    		tax-class-column 
+		            	    		{% if attribute(cookies, 'tax-class-column') is empty %}
+										hide-column
+									{% endif %}
+								"
+							>
+		            	    	<select name="filter_tax_class" class="filter form-control">
+		            	        	<option value="*"></option>
+									{% if filter_tax_class == -1 %}
+		            	        		<option value="-1" class="no-select" selected="selected">{{ select_no_tax }}</option>
+		            	        	{% else %}
+										<option value="-1" class="no-select">{{ select_no_tax }}</option>
+									{% endif %}
+		            	            {% for key, tax_class in tax_classes %}
+		            	            	{% if filter_tax_class == key %}
+		            	            		<option selected="selected" value="{{ key }}">{{ tax_class }}</option>
+		            	            	{% else %}
+		            	            		<option value="{{ key }}">{{ tax_class }}</option>
+		            	            	{% endif %}
+		            	            {% endfor %}
+		            	        </select>
+		            	    </td>
+		            		<!-- out of stock status -->
+		            	    <td 
+		            	    	class="
+		            	    		stock-status-column 
+		            	    		{% if attribute(cookies, 'stock-status-column') is empty %}
+										hide-column
+									{% endif %}
+								"
+							>
+		            	        <select name="filter_stock_status" class="filter form-control">
+		            	            <option value="*"></option>
+		            	            {% for key, stock_status in stock_statuses %}
+		            	                {% if filter_stock_status == key %}
+		            	                    <option selected="selected" value="{{ key }}">{{ stock_status }}</option>
+		            	                {% else %}
+		            	                    <option value="{{ key }}">{{ stock_status }}</option>
+		            	                {% endif %}
+		            	            {% endfor %}
+		            	        </select>
+		            	    </td>
+		            		<!--Dimensions -->
+		            	    <td 
+		            	    	class="
+		            	    		dimensions-column 
+		            	    		{% if attribute(cookies, 'dimensions-column') is empty %}
+										hide-column
+									{% endif %}
+								"
+							>
+								{{ length_text }}
+							</td>
+		            	    <td 
+		            	    	class="
+		            	    		dimensions-column 
+		            	    		{% if attribute(cookies, 'dimensions-column') is empty %}
+										hide-column
+									{% endif %}
+								"
+							>
+								{{ width_text }}
+							</td>
+		            	    <td 
+		            	    	class="
+		            	    		dimensions-column 
+		            	    		{% if attribute(cookies, 'dimensions-column') is empty %}
+										hide-column
+									{% endif %}
+								"
+							>
+								{{ height_text }}
+							</td>
+		            		<!--Length class-->
+		            	    <td 
+		            	    	class="
+		            	    		length-class-column 
+		            	    		{% if attribute(cookies, 'length-class-column') is empty %}
+										hide-column
+									{% endif %}
+								"
+							>
+		            	    	<select name="filter_length_class" class="filter form-control">
+		            	            <option value="*"></option>
+		            	            {% for key, length_class in length_classes %}
+		            	                {% if filter_length_class == key %}
+		            	                    <option selected="selected" value="{{ key }}">{{ length_class }}</option>
+		            	                {% else %}
+		            	                    <option value="{{ key }}">{{ length_class }}</option>
+		            	                {% endif %}	
+		            	            {% endfor %}
+		            	        </select>
+		            	    </td>
+		            	    <td 
+		            	    	align="right" 
+		            	    	class="
+		            	    		order-column 
+		            	    		{% if attribute(cookies, 'order-column') is empty %}
+										hide-column
+									{% endif %}
+								"
+							>
+								<input 
+									class="filter form-control" 
+									type="text" 
+									name="filter_sort_order" 
+									size="4" 
+									value="{{ filter_sort_order }}" 
+									style="text-align: right;" 
+								/>
+							</td>
+		            	    <td 
+		            	    	align="right" 
+		            	    	class="
+		            	    		ean-column 
+		            	    		{% if attribute(cookies, 'ean-column') is empty %}
+										hide-column
+									{% endif %}
+								"
+							>
+								<input 
+									class="filter form-control" 
+									type="text" 
+									name="filter_ean" 
+									size="4" 
+									value="{{ filter_ean }}" 
+									style="text-align: right;" 
+								/>
+							</td>
+		            	    <td 
+		            	    	align="right" 
+		            	    	class="
+		            	    		jan-column 
+		            	    		{% if attribute(cookies, 'jan-column') is empty %}
+										hide-column
+									{% endif %}
+		            	    	"
+		            	    >
+		            	    	<input 
+		            	    		class="filter form-control" 
+		            	    		type="text" 
+		            	    		name="filter_jan" 
+		            	    		size="4" 
+		            	    		value="{{ filter_jan }}" 
+		            	    		style="text-align: right;" 
+		            	    	/>
+		            	    </td>
+		            	    <td 
+		            	    	align="right" 
+		            	    	class="
+		            	    		mpn-column 
+		            	    		{% if attribute(cookies, 'mpn-column') is empty %}
+										hide-column
+									{% endif %}
+								"
+							>
+								<input 
+									class="filter form-control" 
+									type="text" 
+									name="filter_mpn" 
+									size="4" 
+									value="{{ filter_mpn }}" 
+									style="text-align: right;" 
+								/>
+							</td>
+		            	    <td 
+		            	    	align="right" 
+		            	    	class="
+		            	    		isbn-column 
+		            	    		{% if attribute(cookies, 'isbn-column') is empty %}
+										hide-column
+									{% endif %}
+		            	    	"
+		            	    >
+		            	    	<input 
+		            	    		class="filter form-control" 
+		            	    		type="text" 
+		            	    		name="filter_isbn" 
+		            	    		size="4" 
+		            	    		value="{{ filter_isbn }}" 
+		            	    		style="text-align: right;" 
+		            	    	/>
+		            	   	</td>
+		            	    <!--view-hook-table-filter-->
+		            	    <td 
+								class="
+									points-column 
+									{% if attribute(cookies, 'points-column') is empty %}
+										hide-column
+									{% endif %}
+								"
+							>
+								<input 
+									type="text" 
+									name="filter_points" 
+									class="filter form-control" 
+									size="10" 
+									value="{{ filter_points }}" 
+								/>
+							</td>
+		            	    <td 
+		            	    	class="
+		            	    		tags-column 
+		            	    		{% if attribute(cookies, 'tags-column') is empty %}
+		            	    			hide-column
+		            	    		{% endif %}
+		            	    	"
+		            	    >
+		            	    	&nbsp;
+		            	    </td>
+		            	    <td 
+		            	    	class="
+		            	    		center discount-price-column 
+			            	    	{% if attribute(cookies, 'discount-price-column') is empty %}
+										hide-column
+									{% endif %}
+								"
+							>
+								{{ max_priority }}
+							</td>
+		            	    <td 
+		            	    	class="
+		            	    		center special-price-column 
+		            	    		{% if attribute(cookies, 'special-price-column') is empty %}
+										hide-column
+									{% endif %}
+								"
+							>
+								{{max_priority }}
+							</td>
+		            	    <td class="text-center" class="white-space: nowrap;">
+		            	    	<a onclick="filter();" class="btn btn-default button">
+		            	    		<i class="fa fa-search" aria-hidden="true"></i>
+		            	    	</a>
+		            	        <a onclick="resetFilter();" class="btn btn-default button">
+		            	        	<i class="fa fa-times" aria-hidden="true"></i>
+		            	       	</a>
+		            	    </td>
+		            	</tr>
+		            	<!-- end filter column -->
+		          	</thead>
+
+					<tbody>
+			          	{% if products %}
+			          		{% for product in products %}
+								<tr class="product-row" data-id="{{ product.product_id }}">
+              						<td style="text-align: center;">
+              							{% if product.selected %}
+              								<input type="checkbox" name="selected[]" value="{{ product.product_id }}" checked="checked" />
+              							{% else %}
+              								<input type="checkbox" name="selected[]" value="{{ product.product_id }}"/>
+              							{% endif %}
+              						</td>
+
+              						<td 
+              							class="
+				            	    		id-column 
+					            	    	{% if attribute(cookies, 'id-column') is empty %}
+												hide-column
+											{% endif %}
+										"
+									>
+										{{ product.product_id }}
+									</td>
+              						<td 
+              							class="
+              								center 
+              								product-image 
+              								image-column
+              								{% if attribute(cookies, 'image-column') is empty %}
+												hide-column
+											{% endif %}
+										"
+										rel="{{ link }}&type=change_image&product_id={{ product.product_id }}"
+									>
+                  						<div class="image-wrapper">
+                  							<a 
+                  								href="" 
+                  								id="thumb-image-{{ product.product_id }}" 
+                  								data-toggle="main-image" 
+                  								class="img-thumbnail"
+                  							>
+                    							<img 
+                    								src="{{ product.image }}" 
+                    								alt="" 
+                    								title="" 
+                    								data-placeholder="{{ placeholder }}" 
+                    							/>
+                    						</a>
+                    						<input 
+                    							type="hidden" 
+                    							name="image" 
+                    							value="{{ product.image }}" 
+                    							data-id="{{ product.product_id }}" 
+                    							id="image-{{ product.product_id }}" 
+                    							rel="index.php?route=extension/product_extra&type=change_image&user_token={{ user_token }}"
+                    						/>
+                    						<a class="remove" href="#">&times</a>
+                  						</div>
+              						</td>
+									<td 
+										class="
+											left inputs product-name product-column 
+											{% if attribute(cookies, 'product-column') is empty %}
+												hide-column
+											{% endif %}
+										"
+									>
+										<span class="product-name-wrapper">{{ product.name }}</span>
+									  	<input 
+									  		style="display: none;" 
+									  		type="text" 
+									  		orig="{{ product.name }}" 
+									  		rel="{{ link }}&type=change_name&product_id={{ product.product_id }}&language={{ selected_language }}" 
+									  		name="model" 
+									  		value="{{ product.name }}"/>
+									</td>
+									<td 
+										class="
+											left inputs product-model model-column 
+											{% if attribute(cookies, 'model-column') is empty %}
+												hide-column
+											{% endif %}
+										"
+									>
+										<input 
+											type="text" 
+											orig="{{ product.model }}" 
+											rel="{{ link }}&type=change_model&product_id={{ product.product_id }}" 
+											name="model" 
+											value="{{ product.model }}"
+										/>
+									</td>
+									<td 
+										class="
+											left inputs product-meta-title product-meta-title-column 
+											{% if attribute(cookies, 'product-meta-title-column') is empty %}
+												hide-column
+											{% endif %}
+										"
+									>
+                						<span class="product-meta-title-wrapper">
+                							{{ product.meta_title }}
+                						</span>
+                						<input 
+                							style="display: none;" 
+                							type="text" 
+                							orig="{{ product.meta_title }}" 
+                							rel="{{ link }}&type=change_meta_title&product_id={{ product.product_id }}&language={{ selected_language }}" 
+                							name="model" 
+                							value="{{ product.meta_title }}"
+                						/>
+              						</td>
+              						<td 
+										class="
+											left inputs product-meta-keyword product-meta-keyword-column 
+											{% if attribute(cookies, 'product-meta-keyword-column') is empty %}
+												hide-column
+											{% endif %}
+										"
+									>
+                						<span class="product-meta-keyword-wrapper">
+                							{{ product.meta_keyword }}
+                						</span>
+                						<input 
+                							style="display: none;" 
+                							type="text" 
+                							orig="{{ product.meta_keyword }}" 
+                							rel="{{ link }}&type=change_meta_keyword&product_id={{ product.product_id }}&language={{ selected_language }}" 
+                							name="model" 
+                							value="{{ product.meta_keyword }}"
+                						/>
+              						</td>
+
+              						<td 
+										class="
+											left inputs product-meta-description product-meta-description-column 
+											{% if attribute(cookies, 'product-meta-description-column') is empty %}
+												hide-column
+											{% endif %}
+										"
+									>
+                						<span class="product-meta-description-wrapper">
+                							{{ product.meta_description }}
+                						</span>
+                						<input 
+                							style="display: none;" 
+                							type="text" 
+                							orig="{{ product.meta_description }}" 
+                							rel="{{ link }}&type=change_meta_description&product_id={{ product.product_id }}&language={{ selected_language }}" 
+                							name="model" 
+                							value="{{ product.meta_description }}"
+                						/>
+              						</td>
+									<td 
+										class="
+											left categories category-column 
+											{% if attribute(cookies, 'category-column') is empty %}
+												hide-column
+											{% endif %}
+										" 
+										id="categories-for-{{ product.product_id }}"
+									>
+										<div class="category-cell">
+											<ul>
+									    		{% if product.categories %}
+									      			{% for k, category in product.categories %}
+														{% if attribute(categories, category) %}
+															<li class="cat-list" data-id="{{ category }}">
+													            <a href="{{ link }}&type=remove_category&product_id={{ product.product_id }}&category_id={{ category }}" class="remove-category" style="display: none;">x</a>
+													            {{ attribute(categories, category) }}
+													        </li>
+														{% endif %}
+									      			{% endfor %}
+									      		{% endif %}
+									    	</ul>
+									  	</div>
+									</td>
+									<td 
+										class="
+											left filters filter-column 
+											{% if attribute(cookies, 'filter-column') is empty %}
+												hide-column
+											{% endif %}
+										" 
+										id="filters-for-{{ product.product_id }}"
+									>
+										<div class="filter-cell">
+											<ul>
+									    		{% if product.filters %}
+									      			{% for k, value in product.filters %}
+														{% if attribute(filters, value) %}
+															<li class="filter-list" data-id="{{ value }}">
+													            <a href="{{ link }}&type=remove_filter&product_id={{ product.product_id }}&filter_id={{ value }}" class="remove-filter" style="display: none;">x</a>
+													            {{ attribute(filters, value) }}
+													        </li>
+														{% endif %}
+									      			{% endfor %}
+									      		{% endif %}
+									    	</ul>
+									  	</div>
+									</td>
+									<td 
+										class="
+											left product-manufacturer manufacturer-column 
+											{% if attribute(cookies, 'manufacturer-column') is empty %}
+												hide-column
+											{% endif %}
+										" 
+										rel="{{ product.manufacturer_id }}" 
+										loc="{{ link }}&type=change_manufacturer&product_id={{ product.product_id }}"
+									>
+										{% if attribute(manufacturers, product.manufacturer_id) %}
+											{{ attribute(manufacturers, product.manufacturer_id) }}
+										{% endif %}
+									</td>
+									{% if stores|length > 0 %}
+										<td 
+											class="
+												left stores stores-column 
+												{% if attribute(cookies, 'stores-column') is empty %}
+													hide-column
+												{% endif %}
+											"
+										>
+											<div>
+												<a 
+													href="{{ link }}&type=change_store&product_id={{ product.product_id }}&store_id=0" 
+													class="
+														{% if 0 in product.stores %}
+															included
+														{% else %}
+															excluded
+														{% endif %}
+													"
+												>
+													{{ text_default }}
+												</a>
+											</div>
+											
+											{% for store in stores %}
+												<div>
+													<a 
+														href="{{ link }}&type=change_store&product_id={{ product.product_id }}&store_id={{store.store_id }}" 
+														class="
+															{% if store.store_id in product.stores %}
+																included
+															{% else %}
+																excluded
+															{% endif %}
+														"
+													>
+														{{ store.name }}
+													</a>
+												</div>
+											{% endfor %}
+										</td>
+										<!-- store preview-->
+										<td 
+											class="
+												left stores-column 
+												{% if attribute(cookies, 'stores-column') is empty %}
+													hide-column
+												{% endif %}
+											"
+										>
+											<div>
+												<a 
+													href="{{ constant('HTTP_CATALOG') }}?route=product/product&product_id={{ product.product_id }}" 
+													target="frontend"
+												>
+													{{ text_default }}
+												</a>
+											</div>
+											{% for store in stores %}
+												<div>
+													<a 
+														href="{{ store.url }}?route=product/product&product_id={{ product.product_id }}" target="frontend"
+													>
+														{{ store.name }}
+													</a>
+												</div>
+											{% endfor %}
+										</td>
+									{% endif %}
+									<td 
+										class="
+											right inputs price price-column 
+											{% if attribute(cookies, 'price-column') is empty %}
+												hide-column
+											{% endif %}
+										"
+									>
+                						<input 
+                							class="gross-price-field product-price-field" 
+                							type="text" 
+                							orig="{{ product.price }}" 
+                							rel="{{ link }}&type=change_price&product_id={{ product.product_id }}" 
+                							name="quantity" 
+                							value="{{ product.price }}"
+                						/>
+              						</td>
+              						<td 
+              							class="
+              								right frontend-price frontend-price-column 
+              								{% if attribute(cookies, 'frontend-price-column') is empty %}
+												hide-column
+											{% endif %}
+										"
+									>
+                						<span class="gross">
+                							{{ product.frontend_price.1|number_format(4) }}
+                						</span>
+                						<br/>
+                						<span class="net">
+                							{{ product.frontend_price.0|number_format(4)}}
+                						</span>
+            						</td>
+            						<td 
+            							class="
+            								right inputs quantity qty-column 
+            								{% if attribute(cookies, 'qty-column') is empty %}
+												hide-column
+											{% endif %}
+										"
+									>
+										<input 
+											type="text" 
+											orig="{{ product.quantity }}" 
+											rel="{{ link }}&type=change_quantity&product_id={{ product.product_id }}" 
+											name="quantity" 
+											class="
+												{% if product.quantity <= 0 %}
+													red
+												{% elseif product.quantity <= 5 %}
+													yellow
+												{% else %}
+													green
+												{% endif %}
+											" 
+											value="{{ product.quantity }}"
+										/>
+									</td>
+									<td 
+            							class="
+            								right inputs minimum minimum-column 
+            								{% if attribute(cookies, 'minimum-column') is empty %}
+												hide-column
+											{% endif %}
+										"
+									>
+										<input 
+											type="text" 
+											orig="{{ product.minimum }}" 
+											rel="{{ link }}&type=change_minimum&product_id={{ product.product_id }}" 
+											name="minimum" 
+											value="{{ product.minimum }}"
+										/>
+									</td>
+									<td 
+										class="
+											status left status-column 
+											{% if attribute(cookies, 'status-column') is empty %}
+												hide-column
+											{% endif %}
+										"
+									>
+										<a 
+											href="{{ link }}&type=change_status&product_id={{ product.product_id }}&store_id=0" 
+											class="
+												{% if product.status_int == 1 %}
+													included
+												{% else %}
+													excluded
+												{% endif %}
+											"
+										>
+											{{ product.status }}
+										</a>
+									</td>
+									<td 
+										class="
+											subtract left subtract-column 
+											{% if attribute(cookies, 'subtract-column') is empty %}
+												hide-column
+											{% endif %}
+										"
+									>
+										<a 
+											href="{{ link }}&type=change_subtract&product_id={{ product.product_id }}&store_id=0" 
+											class="
+												{% if product.subtract_int == 1 %}
+													included
+												{% else %}
+													excluded
+												{% endif %}
+											"
+										>
+											{{ product.subtract }}
+										</a>
+									</td>
+									<td 
+										class="
+											shipping left shipping-column 
+											{% if attribute(cookies, 'shipping-column') is empty %}
+												hide-column
+											{% endif %}
+										"
+									>
+										<a 
+											href="{{ link }}&type=change_shipping&product_id={{ product.product_id }}&store_id=0" 
+											class="
+												{% if product.shipping_int == 1 %}
+													included
+												{% else %}
+													excluded
+												{% endif %}
+											"
+										>
+											{{ product.shipping }}
+										</a>
+									</td>
+									<td 
+										class="
+											right inputs sku sku-column 
+											{% if attribute(cookies, 'sku-column') is empty %}
+												hide-column
+											{% endif %}
+										"
+									>
+										<input 
+											type="text" 
+											orig="{{ product.sku }}" 
+											rel="{{ link }}&type=change_sku&product_id={{ product.product_id }}" 
+											name="sku" 
+											value="{{ product.sku }}"
+										/>
+									</td>
+									<td 
+										class="
+											right inputs upc upc-column 
+											{% if attribute(cookies, 'upc-column') is empty %}
+												hide-column
+											{% endif %}
+										"
+									>
+										<input 
+											type="text" 
+											orig="{{ product.upc }}" 
+											rel="{{ link }}&type=change_upc&product_id={{ product.product_id }}" 
+											name="upc" 
+											value="{{ product.upc }}"
+										/>
+									</td>
+									<td 
+										class="
+											right inputs location location-column 
+											{% if attribute(cookies, 'location-column') is empty %}
+												hide-column
+											{% endif %}
+										"
+									>
+										<input 
+											type="text" 
+											orig="{{ product.location }}" 
+											rel="{{ link }}&type=change_location&product_id={{ product.product_id }}" 
+											name="location" 
+											value="{{ product.location }}"
+										/>
+									</td>
+									<td 
+										class="
+											right inputs date datefield date_available date-available-column 
+											{% if attribute(cookies, 'date-available-column') is empty %}
+												hide-column
+											{% endif %}
+										"
+									>
+										<input 
+											type="text" 
+											class="datepicker" 
+											data-format="YYYY-MM-DD" 
+											data-date-format="YYYY-MM-DD" 
+											orig="{{ product.date_available }}" 
+											rel="{{ link }}&type=change_date_available&product_id={{ product.product_id }}" 
+											name="date_available" 
+											value="{{ product.date_available }}"
+										/>
+									</td>
+									<td 
+										class="
+											left inputs seo seo-column 
+											{% if attribute(cookies, 'seo-column') is empty %}
+												hide-column
+											{% endif %}
+										"
+									>
+										<input 
+											type="text" 
+											data-language="{{ selected_language }}"
+											orig="{{ product.keyword }}" 
+											rel="{{ link }}&type=change_seo&product_id={{ product.product_id }}&language={{ selected_language }}" 
+											name="keyword" 
+											value="{{ product.keyword }}"
+										/>
+									</td>
+									<!-- Weight -->
+									<td 
+										class="
+											left inputs weight weight-column 
+											{% if attribute(cookies, 'weight-column') is empty %}
+												hide-column
+											{% endif %}
+										"
+									>
+										<input 
+											type="text" 
+											orig="{{ product.weight }}" 
+											rel="{{ link }}&type=change_weight&product_id={{ product.product_id }}" 
+											name="weight" 
+											value="{{ product.weight }}"
+										/>
+									</td>
+									<!-- Weight class -->
+									<td 
+										class="
+											left weight-class weight-class-column 
+											{% if attribute(cookies, 'weight-class-column') is empty %}
+												hide-column
+											{% endif %}
+										" 
+										rel="{{ product.weight_class_id }}" 
+										loc="{{ link }}&type=change_weight_class&product_id={{ product.product_id }}"
+									>
+										{% if attribute(weight_classes, product.weight_class_id) %}
+											{{ attribute(weight_classes, product.weight_class_id) }}
+										{% endif %}
+									</td>
+									<!-- Tax Class -->
+									<td 
+										class="
+											left tax-class tax-class-column 
+											{% if attribute(cookies, 'tax-class-column') is empty %}
+												hide-column
+											{% endif %}
+										" 
+										rel="{{ product.tax_class_id }}" 
+										loc="{{ link }}&type=change_tax_class&product_id={{ product.product_id }}"
+									>
+										{% if attribute(tax_classes, product.tax_class_id) %}
+											{{ attribute(tax_classes, product.tax_class_id) }}
+										{% endif %}
+									</td>
+									<!-- Out of stock status -->
+									<td 
+										class="
+											left stock-status stock-status-column 
+											{% if attribute(cookies, 'stock-status-column') is empty %}
+												hide-column
+											{% endif %}
+										" 
+										rel="{{ product.stock_status_id }}" 
+										loc="{{ link }}&type=change_stock_status&product_id={{ product.product_id }}"
+									>
+										{% if attribute(stock_statuses, product.stock_status_id) %}
+											{{ attribute(stock_statuses, product.stock_status_id) }}
+										{% endif %}
+									</td>
+									<!--Dimensions -->
+									<td 
+										class="
+											left inputs length dimensions dimensions-column 
+											{% if attribute(cookies, 'dimensions-column') is empty %}
+												hide-column
+											{% endif %}
+										"
+									>
+										<input 
+											type="text" 
+											orig="{{ product.length }}" 
+											rel="{{ link }}&type=change_length&product_id={{ product.product_id }}" 
+											name="length" 
+											value="{{ product.length }}"
+										/>
+									</td>
+									<td 
+										class="
+											left inputs width dimensions dimensions-column 
+											{% if attribute(cookies, 'dimensions-column') is empty %}
+												hide-column
+											{% endif %}
+										"
+									>
+										<input 
+											type="text" 
+											orig="{{ product.width }}" 
+											rel="{{ link }}&type=change_width&product_id={{ product.product_id }}" 
+											name="width" 
+											value="{{ product.width }}"
+										/>
+									</td>
+									<td 
+										class="
+											left inputs height dimensions dimensions-column 
+											{% if attribute(cookies, 'dimensions-column') is empty %}
+												hide-column
+											{% endif %}
+										"
+									>
+										<input 
+											type="text" 
+											orig="{{ product.height }}" 
+											rel="{{ link }}&type=change_height&product_id={{ product.product_id }}" 
+											name="height" 
+											value="{{ product.height }}"
+										/>
+									</td>
+									<!-- Length class -->
+									<td 
+										class="
+											left length-class length-class-column 
+											{% if attribute(cookies, 'length-class-column') is empty %}
+												hide-column
+											{% endif %}
+										" 
+										rel="{{ product.length_class_id }}" 
+										loc="{{ link }}&type=change_length_class&product_id={{ product.product_id }}"
+									>
+										{% if attribute(length_classes, product.length_class_id) %}
+											{{ attribute(length_classes, product.length_class_id) }}
+										{% endif %}
+									</td>
+									<td 
+										class="
+											right inputs sort_order order-column 
+											{% if attribute(cookies, 'order-column') is empty %}
+												hide-column
+											{% endif %}
+										"
+									>
+										<input 
+											type="text" 
+											orig="{{ product.sort_order }}" 
+											rel="{{ link }}&type=change_sort_order&product_id={{ product.product_id }}" 
+											name="sort_order" 
+											value="{{ product.sort_order }}"
+										/>
+									</td>
+									<td 
+										class="
+											right inputs ean ean-column 
+											{% if attribute(cookies, 'ean-column') is empty %}
+												hide-column
+											{% endif %}
+										"
+									>
+										<input 
+											type="text" 
+											orig="{{ product.ean }}" 
+											rel="{{ link }}&type=change_ean&product_id={{ product.product_id }}" 
+											name="ean" 
+											value="{{ product.ean }}"
+										/>
+									</td>
+									<td 
+										class="
+											right inputs jan jan-column 
+											{% if attribute(cookies, 'jan-column') is empty %}
+												hide-column
+											{% endif %}
+										"
+									>
+										<input 
+											type="text" 
+											orig="{{ product.jan }}" 
+											rel="{{ link }}&type=change_jan&product_id={{ product.product_id }}" 
+											name="jan" 
+											value="{{ product.jan }}"
+										/>
+									</td>
+									<td 
+										class="
+											right inputs mpn mpn-column 
+											{% if attribute(cookies, 'mpn-column') is empty %}
+												hide-column
+											{% endif %}
+										"
+									>
+										<input 
+											type="text" 
+											orig="{{ product.mpn }}" 
+											rel="{{ link }}&type=change_mpn&product_id={{ product.product_id }}" 
+											name="mpn" 
+											value="{{ product.mpn }}"
+										/>
+									</td>
+									<td 
+										class="
+											right inputs isbn isbn-column 
+											{% if attribute(cookies, 'isbn-column') is empty %}
+												hide-column
+											{% endif %}
+										"
+									>
+										<input 
+											type="text" 
+											orig="{{ product.isbn }}" 
+											rel="{{ link }}&type=change_isbn&product_id={{ product.product_id }}" 
+											name="isbn" 
+											value="{{ product.isbn }}"
+										/>
+									</td>
+									<!--view-hook-table-row-->
+									<td 
+										class="
+											left inputs product-points points-column 
+											{% if attribute(cookies, 'points-column') is empty %}
+												hide-column
+											{% endif %}
+										"
+									>
+										<input 
+											type="text" 
+											orig="{{ product.points }}" 
+											rel="{{ link }}&type=change_points&product_id={{ product.product_id }}" 
+											name="points" 
+											value="{{ product.points }}"
+										/>
+									</td>
+									<td 
+										class="
+											left inputs tags tags-column 
+											{% if attribute(cookies, 'tags-column') is empty %}
+												hide-column
+											{% endif %}
+										"
+									>
+										<span class="tags-wrapper">{{ product.tags }}</span>
+										<input 
+											style="display: none;" 
+											data-language="{{ selected_language }}"
+											type="text" 
+											orig="{{ product.tags }}" 
+											rel="{{ link }}&type=change_tags&product_id={{ product.product_id }}&language={{ selected_language }}" 
+											name="tags" 
+											value="{{ product.tags }}" 
+											class="tags left"
+										/>
+									</td>
+									<td 
+										class="
+											right inputs discount-price-column discount-column 
+											{% if attribute(cookies, 'discount-price-column') is empty %}
+												hide-column
+											{% endif %}
+										"
+									>
+										<input 
+											class="gross-price-field discount-price-field" 
+											type="text" 
+											orig="{{ product.discount_price }}" 
+											rel="{{ link }}&type=change_discount&product_id={{ product.product_id }}" 
+											name="discount_price" 
+											value="{{ product.discount_price }}"
+										/>
+									</td>
+									<td 
+										class="
+											right inputs special-price-column special-column 
+											{% if attribute(cookies, 'special-price-column') is empty %}
+												hide-column
+											{% endif %}
+										"
+									>
+										<input 
+											class="gross-price-field special-price-field" 
+											type="text" 
+											orig="{{ product.special_price }}" 
+											rel="{{ link }}&type=change_special&product_id={{ product.product_id }}" 
+											name="special_price" 
+											value="{{ product.special_price }}"
+										/>
+									</td>
+									<td class="nobr acions">
+									    <span 
+									    	class="
+									    		action-button discounts-column 
+									    		{% if attribute(cookies, 'discounts-column') is empty %}
+									    			hide-column
+									    		{% endif %}	
+									    	"
+									    >
+									    		<a 
+									    			class="
+									    				discount_link pe_action
+									    				{% if product.hasDiscount %}
+									    					has_discount
+									    				{% endif %}
+									    			" 
+									    			href="{{ link }}&type=special_prices&product_id={{ product.product_id }}&t=discount" title="{{ discount_link }}"
+									    		>
+									    			D
+									    		</a>
+									    </span>
+									    <span 
+									    	class="
+									    		action-button specials-column 
+									    		{% if attribute(cookies, 'specials-column') is empty %}
+									    			hide-column
+									    		{% endif %}
+									    	"
+									    >
+									    	<a 
+									    		class="
+									    			special_link pe_action
+									    			{% if product.hasSpecial %}
+								    					has_discount
+								    				{% endif %}
+								    			" 
+								    			href="{{ link }}&type=special_prices&product_id={{ product.product_id }}&t=special" 
+								    			title="{{ special_link }}"
+								    		>
+								    			S
+								    		</a>
+								    	</span>
+									    <span 
+									    	class="
+									    		action-button edit-column 
+									    		{% if attribute(cookies, 'edit-column') is empty %}
+									    			hide-column
+									    		{% endif %}
+									    	"
+									    >
+									    	<a 
+									    		class="edit_link pe_action" 
+									    		href="{{ product.action }}" 
+									    		title="{{ edit_link }}"
+									    	>
+									    		E
+									    	</a>
+									    </span>
+									    <span 
+									    	class="
+									    		action-button view-column 
+									    		{% if attribute(cookies, 'view-column') is empty %}
+									    			hide-column
+									    		{% endif %}
+									    	"
+									    >
+									    	<a 
+									    		class="view_link pe_action" 
+									    		href="{{ constant('HTTP_CATALOG') }}?route=product/product&product_id={{ product.product_id }}" 
+									    		target="frontend" 
+									    		title="{{ view_column_switch }}"
+									    	>
+									    		V
+									    	</a>
+									    </span>
+									    <span 
+									    	class="
+									    		featured-column 
+									    		{% if attribute(cookies, 'featured-column') is empty %}
+									    			hide-column
+									    		{% endif %}
+									    	"
+									    >
+									    	<a 
+									    		class="
+									    			featured_link pe_action
+									    			{% if product.product_id in featured %}
+									    				is_favourite
+									    			{% endif %}
+									    		" 
+									    		href="{{ link }}&type=featured_product&product_id={{ product.product_id }}"
+									    		title="Make Featured"
+									    	>
+									    		F
+									    	</a>
+									    </span>
+									    <!--view-hook-actions-row-->
+									</td>
+								</tr>
+			          		{% endfor %}
+			          	{% else %}
+			          		<tr>
+			          			<td class="text-center" colspan="1000">{{ text_no_results }}</td>
+			          		</tr>
+			          	{% endif %}
+		          	</tbody>
+		        </table>
+
+		        <div class="row">
+	            	<div class="col-sm-6 text-left">{{ pagination }}</div>
+	            	<div class="col-sm-6 text-right">
+	            		{{ results }}
+	            		 · 
+	            		{% set page_rows = [3,20,50,100] %}
+
+	            		{{ rows_in_table }}
+	            		<select name="rows-per-page" id="rows-per-page">
+			                {% for row in page_rows %}
+								{% if current_rows == row %}
+									<option selected value="{{ row }}">{{ row }}</option>
+								{% else %}
+									<option value="{{ row }}">{{ row }}</option>
+								{% endif %}
+			                {% endfor %}
+		              </select>
+	            	</div>
+	            </div>
+
+	            <p style="color: #c00; margin-top: 20px;" class="text-center">
+					Do you like the extension? See other extensions from the same developer: 
+					<a href="http://nik.chankov.net/opencart" target="_blank">here</a>
+				</p>
+	{% if (ajaxed  != true) %}
+		</div>
+		</form>
+		</div>
+		{{ footer }}
+
+		<script type="text/javascript">
+			var token = '{{ user_token }}';
+			var link = 'index.php?route=extension/product_extra&user_token={{ user_token }}';
+			var no_image = '{{ no_image }}';
+			var text_product_manager = '{{ text_product_manager }}';
+			var confirmation = '{{ text_confirm }}';
+		</script>
+
+		<script type="text/javascript">
+			function resetFilter(){
+				$('#product-extra-wrapper tr.filter input').val('');
+				$('#product-extra-wrapper tr.filter select').each(function(){
+					$(this).val($(this).find('option:first').val());
+				});
+				filter();
+			}
+			
+			function filter() {
+				url = 'index.php?route=extension/product_extra&user_token={{ user_token }}';
+		          
+				var filter_id = $('#product-extra-wrapper input[name=\'filter_id\']').val();
+				if (filter_id) {
+					url += '&filter_id=' + encodeURIComponent(filter_id);
+				}
+
+				var filter_name = $('#product-extra-wrapper input[name=\'filter_name\']').val();
+
+				if (filter_name) {
+					url += '&filter_name=' + encodeURIComponent(filter_name);
+				}
+
+				var filter_model = $('#product-extra-wrapper input[name=\'filter_model\']').val();
+
+				if (filter_model) {
+					url += '&filter_model=' + encodeURIComponent(filter_model);
+				}
+
+				var filter_meta_title = $('#product-extra-wrapper input[name=\'filter_meta_title\']').val();
+
+				if (filter_meta_title) {
+					url += '&filter_meta_title=' + encodeURIComponent(filter_meta_title);
+				}
+				var filter_meta_keyword = $('#product-extra-wrapper input[name=\'filter_meta_keyword\']').val();
+
+				if (filter_meta_keyword) {
+					url += '&filter_meta_keyword=' + encodeURIComponent(filter_meta_keyword);
+				}
+				var filter_meta_description = $('#product-extra-wrapper input[name=\'filter_meta_description\']').val();
+
+				if (filter_meta_description) {
+					url += '&filter_meta_description=' + encodeURIComponent(filter_meta_description);
+				}
+
+				var filter_quantity = $('#product-extra-wrapper input[name=\'filter_quantity\']').val();
+
+				if (filter_quantity) {
+					url += '&filter_quantity=' + encodeURIComponent(filter_quantity);
+				}
+
+				var filter_minimum = $('#product-extra-wrapper input[name=\'filter_minimum\']').val();
+
+				if (filter_minimum) {
+					url += '&filter_minimum=' + encodeURIComponent(filter_minimum);
+				}
+
+				var filter_weight = $('#product-extra-wrapper input[name=\'filter_weight\']').val();
+
+				if (filter_weight) {
+					url += '&filter_weight=' + encodeURIComponent(filter_weight);
+				}
+
+				var filter_sku = $('#product-extra-wrapper input[name=\'filter_sku\']').val();
+
+				if (filter_sku) {
+					url += '&filter_sku=' + encodeURIComponent(filter_sku);
+				}
+
+				var filter_upc = $('#product-extra-wrapper input[name=\'filter_upc\']').val();
+
+				if (filter_upc) {
+					url += '&filter_upc=' + encodeURIComponent(filter_upc);
+				}
+				var filter_ean = $('#product-extra-wrapper input[name=\'filter_ean\']').val();
+
+
+				var filter_location = $('#product-extra-wrapper input[name=\'filter_location\']').val();
+
+				if (filter_location) {
+					url += '&filter_location=' + encodeURIComponent(filter_location);
+				}
+				var filter_date_available = $('#product-extra-wrapper input[name=\'filter_date_available\']').val();
+
+				if (filter_date_available) {
+					url += '&filter_date_available=' + encodeURIComponent(filter_date_available);
+				}
+
+				var filter_status = $('#product-extra-wrapper select[name=\'filter_status\']').val();
+
+				if (filter_status != '*') {
+					url += '&filter_status=' + encodeURIComponent(filter_status);
+				}
+
+				var filter_subtract = $('#product-extra-wrapper select[name=\'filter_subtract\']').val();
+
+				if (filter_subtract != '*') {
+					url += '&filter_subtract=' + encodeURIComponent(filter_subtract);
+				}
+
+				var filter_shipping = $('#product-extra-wrapper select[name=\'filter_shipping\']').val();
+
+				if (filter_shipping != '*') {
+					url += '&filter_shipping=' + encodeURIComponent(filter_shipping);
+				}
+
+				var filter_store = $('#product-extra-wrapper select[name=\'filter_store\']').val();
+
+				if (typeof(filter_store) != 'undefined' &&filter_store != '*') {
+					url += '&filter_store=' + encodeURIComponent(filter_store);
+				}
+
+				var filter_category = $('#product-extra-wrapper select[name=\'filter_category\']').val();
+
+				if (typeof(filter_category) != 'undefined' &&filter_category != '*') {
+					url += '&filter_category=' + encodeURIComponent(filter_category);
+				}
+
+				var filter_filter = $('#product-extra-wrapper select[name=\'filter_filter\']').val();
+
+				if (typeof(filter_filter) != 'undefined' &&filter_filter != '*') {
+					url += '&filter_filter=' + encodeURIComponent(filter_filter);
+				}
+
+				var filter_manufacturer = $('#product-extra-wrapper select[name=\'filter_manufacturer\']').val();
+
+				if (typeof(filter_manufacturer) != 'undefined' &&filter_manufacturer != '*') {
+					url += '&filter_manufacturer=' + encodeURIComponent(filter_manufacturer);
+				}
+
+				var filter_tax_class = $('#product-extra-wrapper select[name=\'filter_tax_class\']').val();
+
+				if (typeof(filter_tax_class) != 'undefined' &&filter_tax_class != '*') {
+					url += '&filter_tax_class=' + encodeURIComponent(filter_tax_class);
+				}
+
+				var filter_length_class = $('#product-extra-wrapper select[name=\'filter_length_class\']').val();
+
+				if (typeof(filter_length_class) != 'undefined' &&filter_length_class != '*') {
+					url += '&filter_length_class=' + encodeURIComponent(filter_length_class);
+				}
+
+				var filter_weight_class = $('#product-extra-wrapper select[name=\'filter_weight_class\']').val();
+
+				if (typeof(filter_weight_class) != 'undefined' &&filter_weight_class != '*') {
+					url += '&filter_weight_class=' + encodeURIComponent(filter_weight_class);
+				}
+
+				var filter_stock_status = $('#product-extra-wrapper select[name=\'filter_stock_status\']').val();
+
+				if (typeof(filter_stock_status) != 'undefined' &&filter_stock_status != '*') {
+					url += '&filter_stock_status=' + encodeURIComponent(filter_stock_status);
+				}
+
+				var filter_price = $('#product-extra-wrapper input[name=\'filter_price\']').val();
+
+				if (filter_price) {
+					url += '&filter_price=' + encodeURIComponent(filter_price);
+				}
+
+				var filter_sort_order = $('#product-extra-wrapper input[name=\'filter_sort_order\']').val();
+
+				if (filter_sort_order) {
+					url += '&filter_sort_order=' + encodeURIComponent(filter_sort_order);
+				}
+				
+				var filter_jan = $('input[name=\'filter_jan\']').val();				
+				if (filter_ean) {
+				    url += '&filter_ean=' + encodeURIComponent(filter_ean);
+				}
+
+				var filter_jan = $('input[name=\'filter_jan\']').val();
+				if (filter_jan) {
+				    url += '&filter_jan=' + encodeURIComponent(filter_jan);
+				}
+
+				var filter_mpn = $('input[name=\'filter_mpn\']').val();
+				if (filter_mpn) {
+				    url += '&filter_mpn=' + encodeURIComponent(filter_mpn);
+				}
+
+				var filter_isbn = $('input[name=\'filter_isbn\']').val();
+				if (filter_isbn) {
+				    url += '&filter_isbn=' + encodeURIComponent(filter_isbn);
+				}
+				/*view-hook-javascript-1*/
+				var filter_points = $('input[name=\'filter_points\']').prop('value');
+				if (filter_points) {
+					url += '&filter_points=' + encodeURIComponent(filter_points);
+				}
+				//Handling ajaxed filter
+				ajaxified(url);
+				$('#form').attr('current', url);
+				//location = url;
+
+				/*view-hook-javascript-2*/
+			}
+		  	$(document).on('focusout', 'td.ean input', function(){
+		  	    var input = $(this);
+		  	    if(input.val() != input.attr('orig')){
+		  	        $.get(input.attr('rel')+'&ean='+input.val(), function(result){
+		  	                input.val(result);
+		  	                input.attr('orig', result);
+		  	                input.parents('td').addClass('updated');
+		  	                setTimeout(function(){input.parents('td').removeClass('updated');}, 1500);
+		  	        });
+		  	    }
+		  	});
+		  	$(document).on('focusout', 'td.jan input', function(){
+		  	    var input = $(this);
+		  	    if(input.val() != input.attr('orig')){
+		  	        $.get(input.attr('rel')+'&jan='+input.val(), function(result){
+		  	                input.val(result);
+		  	                input.attr('orig', result);
+		  	                input.parents('td').addClass('updated');
+		  	                setTimeout(function(){input.parents('td').removeClass('updated');}, 1500);
+		  	        });
+		  	    }
+		  	});
+		  	$(document).on('focusout', 'td.mpn input', function(){
+		  	    var input = $(this);
+		  	    if(input.val() != input.attr('orig')){
+		  	        $.get(input.attr('rel')+'&mpn='+input.val(), function(result){
+		  	                input.val(result);
+		  	                input.attr('orig', result);
+		  	                input.parents('td').addClass('updated');
+		  	                setTimeout(function(){input.parents('td').removeClass('updated');}, 1500);
+		  	        });
+		  	    }
+		  	});
+		  	$(document).on('focusout', 'td.isbn input', function(){
+		  	    var input = $(this);
+		  	    if(input.val() != input.attr('orig')){
+		  	        $.get(input.attr('rel')+'&isbn='+input.val(), function(result){
+		  	                input.val(result);
+		  	                input.attr('orig', result);
+		  	                input.parents('td').addClass('updated');
+		  	                setTimeout(function(){input.parents('td').removeClass('updated');}, 1500);
+		  	        });
+		  	    }
+		  	});
+		  	$(document).on('click', 'a.featured_link', function(e){
+				e.preventDefault();
+				var a = $(this);
+				
+				$.get($(this).attr('href'), function(){
+					a.toggleClass('is_favourite');
+				});
+			});
+
+			$(document).on('click', '#product-extra-wrapper .copy-default-product', function(e){
+		    	e.preventDefault();
+		    	$.get('index.php?route=extension/product_extra/default_product&user_token='+token, function(result){
+		        	$.post('index.php?route=catalog/product/copy&user_token='+token, {selected: [-1]}, function(result){
+		          		ajaxified(jQuery('#form-product-extra').attr('current'));
+		        	})
+		      	});
+		    });
+			/*view-hook-javascript-3*/
+			$(document).ready(function() {
+				$(document).on('focusout', 'td.product-points input', function(){
+					var input = $(this);
+					if(input.prop('value') != input.attr('orig')){
+					    $.get(input.attr('rel')+'&points='+encodeURIComponent(input.val()), function(result){
+						//input.val(result);
+						input.attr('orig', result);
+						input.parents('td').addClass('updated');
+						setTimeout(function(){input.parents('td').removeClass('updated')}, 1500);
+					    })
+					}
+				});
+			});
+		</script>
+
+		<ul style="display: none;" id="cat-node-template">
+			<li class="cat-list" id="product---p---category---c--">
+				<a 
+					href="{{ link }}&type=remove_category&product_id=--p--&category_id=--c--" 
+					class="remove-category" 
+					style="display: none;"
+				>
+					x
+				</a>
+				--cc--
+			</li>
+		</ul>
+
+		<ul style="display: none;" id="filter-node-template">
+			<li class="filter-list" id="product---p---filter---c--">
+				<a 
+					href="{{ link }}&type=remove_filter&product_id=--p--&filter_id=--f--" 
+					class="remove-filter" 
+					style="display: none;"
+				>
+					x
+				</a>
+				--ff--
+			</li>
+		</ul>
+	{% endif %}
+</div>
