@@ -1,0 +1,6 @@
+---
+deployment:
+  tasks:
+    - export DEPLOYPATH=/home/ocsas/public_html/
+    - /bin/cp -R * $DEPLOYPATH
+    - /opt/cpanel/ea-php72/root/usr/bin/php ../composer.phar update
